@@ -186,11 +186,11 @@ function keyUpHandler(e) {
     }
 }
 
-function removeWorldPart(coordinate){
-    for(var i = 0;i< 10; i++) {
-        if(coordinate > world[coordinate] + 10 || coordinate > world[coordinate] - 10) {
-            world[coordinate+i] += 10;
-            world[coordinate-i] += 10;
+function removeWorldPart(coordX, coordY){
+    for(var i = 0; i< 5; i++) {
+        if(coordinate > world[coordinate] + 5 || coordinate > world[coordinate] - 5) {
+            world[coordinate+i] += 6-i;
+            world[coordinate-i] += 6-i;
         }
     }
 }
@@ -210,7 +210,8 @@ function mouseClickHandler(e){
 
 function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
-    if(relativeX < canvas.width && dragging && editing) {
-        removeWorldPart(relativeX);
+    var relativeY = e.clientY - canvas.offsetTop;
+    if(relativeX < canvas.width && dragging && editing && relativeY < world[relativeX] + 20 && (relativeY > world[relativeX])) {
+        removeWorldPart(relativeX, relativeY);
     }
 }
