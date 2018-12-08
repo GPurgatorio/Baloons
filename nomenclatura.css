@@ -1,0 +1,18 @@
+canvas { 
+  background: #eee; 
+}
+
+body {
+  padding: 20px;
+}
+#editWorld {
+  margin-top: 20px;
+  line-height: 60px;
+  font-weight: bold;
+  padding: 0 40px;
+  background: salmon;
+  border: none;
+}
+#editWorld:hover {
+  background: lightsalmon;
+}
