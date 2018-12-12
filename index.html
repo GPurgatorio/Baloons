@@ -7,17 +7,32 @@
     <style>
     	* { padding: 0; margin: 0; }
     	canvas { background: #eee; display: block; margin: 0 auto; }
+
+        p {
+            text-align: center;
+            font-size: 60px;
+            margin-top: 0px;
+        }
     </style>
 	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.5.0/css/all.css' integrity='sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU' crossorigin='anonymous'>
 	
 </head>
 <body>
 	<!--<center>-->
-	<button id="editWorld" style='font-size:24px' onclick="updateWorld()"> <i class='fas fa-edit'></i></button>
 	<!--</center>-->
-    <canvas id="canvas" width=800 height=500> </canvas>
+    <canvas id="canvas" width=1349 height=627> </canvas>
 
-	<script src="game.js"> </script>
+    <button id="editWorld" style="position:absolute; top:0px; left:300px; width:25px; height:25px; font-size:20px" onclick="updateWorld()"> <i class='fas fa-edit'></i></button>
+    <!--<button style="position: absolute; top:200px; left:20px;" onclick="myFunction()">Click</button>-->
+
+    <script src="worldCreation.js"> </script>
+    <script src="Baloon.js"> </script>
+    <script src="gameLogic.js"> </script>
+
+
+    <!-- TIMER -->
+    <p id="demo" style="position:absolute; top:20px; left: 650px"></p>
+    
 	<!--<script src="file.js"> </script>-->
 	<!--
 	<select id="cursor">
