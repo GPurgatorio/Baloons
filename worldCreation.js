@@ -31,7 +31,8 @@ class worldMap {
     }
 
     static drawWorld(world){
-        for (var n = 0; n < worldMap.canvas.width; n++) {
+        
+        for (var n = 0; n < world.length -1; n++) {
             var h = world[n];
             //https://www.w3schools.com/colors/colors_names.asp
             //terrain
@@ -54,6 +55,35 @@ class worldMap {
             ctx.strokeStyle="#87CEEB";
             ctx.lineTo(n,0);
             ctx.stroke();
+        }
+    }
+
+    static removeWorldPart(world, coordX, coordY){
+        for(var i = 0; i < 8; i++) {
+            world[coordX+i] += 10-i/2;
+            world[coordX-i] += 10-i/2;
+        }
+    }
+
+    static fixWorld(world){
+        var check;
+        var loop = true;
+        for(var n = 0; n < 10; n++) {
+            check = true;
+            for(var i = 1;i<world.length - 1;i++){
+                if(world[i] < world[i+1] + 20 || world[i] > world[i+1] - 20) {
+                    world[i] -= (world[i]-world[i+1])/2;
+                    check = false;
+                    console.log("added smth");
+                }
+                else if(world[i] < world[i-1] + 20 || world[i] > world[i-1] - 20) {
+                    world[i] += (world[i]-world[i+1])/2;
+                    check = false;
+                    console.log("removed smth");
+                }
+            }
+            if(check) 
+                loop = false;
         }
     }
 }

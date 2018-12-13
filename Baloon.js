@@ -27,9 +27,10 @@ class Baloon {
     }
 
     static moveRight(array, p) {
+        let obj = array[p];
         let relX = array[p].x;
         let relY = array[p].y;
-        if(relX < canvas.width - array[p].ballRadius){ 
+        if(relX < canvas.width - obj.ballRadius){ 
             array[p].x += 2;
             if(relY > world[relX] + array[p].ballRadius || relX < world[relX] + array[p].ballRadius || relX > world[relX] + array[p].ballRadius){
                 if(!array[p].jumping)
@@ -65,13 +66,10 @@ class Baloon {
         }
     }
 
-    static updatesMovement(array, p){
+    static movementTurn(array, p){
         let relX = array[p].x;
         let relY = array[p].y;
-        //gravity
-        if(Math.abs(relY) < world[relX] - array[p].ballRadius && !array[p].goingUp){   //assoluto perché se vado sopra lo schermo devo tornare giù comunque
-            array[p].y *= 1.02;
-        }
+
         if(relY >= world[relX] - 10){
             array[p].jumping = false;
         }
@@ -83,4 +81,12 @@ class Baloon {
         }
     }
 
+    static updateBaloons(array) {
+        for(var i = 0; i < array.length; i++) {
+            //gravity
+            if(Math.abs(array[i].y) < world[array[i].x] - array[i].ballRadius && !array[i].goingUp){   //assoluto perché se vado sopra lo schermo devo tornare giù comunque
+                array[i].y *= 1.02;
+            }
+        }
+    }
 }

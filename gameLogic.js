@@ -2,10 +2,6 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-var editing = false;
-var dragging = true;
-var set = false;
-
 //keyboard settings
 var rightPressed = false;
 var leftPressed = false;
@@ -13,109 +9,116 @@ var upPressed = false;
 var downPressed = false;
 var world = [];
 
+//gameLogic settings
+var editing = false;
+var dragging = false;
+var set = false;
+var gameStarted = false;
+
+//gameLogic arguments
 var PALLONI = [];
 var cnt = 0;
 var team = 0;
 var turn = 0;
 
-function gameLoop(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   
-      
-    worldMap.drawWorld(world);
-    Baloon.drawBaloons(PALLONI);  
-    Baloon.updatesMovement(world, turn);
-    if(!set) {
-        set = true;
-        updateGameState();
-    }
+//listeners
+document.addEventListener("keydown", keyDownHandler, false);            //keyboard DOWN
+document.addEventListener("mousemove", mouseMoveHandler, false);        //mouse MOVE
+document.addEventListener("click", mouseClickHandler, false);           //mouse CLICK
+document.addEventListener("mouseup", addBaloon, false);                 //mouse UP
 
-    //requestAnimationFrame(gameLoop);
-}
-
+//actual flow of the program
 setupVariables();
-setInterval(gameLoop,1000/60);
+setInterval(gameLoop,1000/60);          //loop
 
-
-
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
-//mouse
-document.addEventListener("mousemove", mouseMoveHandler, false);
-document.addEventListener("click", mouseClickHandler, false);
-document.addEventListener("mouseup", addBaloon, false);
-
-
-function keyDownHandler(e) {
-    if(e.keyCode == 38){
-        Baloon.moveUp(PALLONI,turn);
-    }
-    else if(e.keyCode == 39) {
-        Baloon.moveRight(PALLONI,turn);
-    }
-    else if(e.keyCode == 37) {
-        Baloon.moveLeft(PALLONI,turn);
-    }
-    else if(e.keyCode == 40){
-        Baloon.moveDown(PALLONI,turn);
-    }
+//sets up used variables
+function setupVariables(){
+    worldMap.canvas = document.getElementById("canvas");
+    worldMap.STEP_MAX = 2.5;
+    worldMap.STEP_CHANGE = 1.0;
+    worldMap.BASE = worldMap.canvas.height;
+    worldMap.HEIGHT_MAX = worldMap.canvas.height/4;
+    worldMap.height = worldMap.BASE*3/4;
+    worldMap.slope = (Math.random() * worldMap.STEP_MAX) * 2 - worldMap.STEP_MAX;
+    worldMap.createWorld(world);
+    PALLONI.push(new Baloon(100,200,cnt));         //at least one to prevent errors     --TO BE REMOVE IN FINAL
+    cnt++;
 }
 
-function keyUpHandler(e) {
-    if(e.keyCode == 38){
-        upPressed = false;
-    }
-    else if(e.keyCode == 39) {
-        rightPressed = false;
-    }
-    else if(e.keyCode == 37) {
-        leftPressed = false;
-    }
-    else if (e.keyCode == 40){
-        downPressed = false;
-    }
-}
-
-function removeWorldPart(coordX, coordY){
-    for(var i = 0; i< 5; i++) {
-        if(coordX > world[coordX] + 5 || coordX > world[coordX] - 5) {
-            world[coordX+i] += 6-i/2;
-            world[coordX-i] += 6-i/2;
+//what actually happens in the game 60 times/second
+function gameLoop(){
+    
+    //world stuff
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   //clear previous screen
+    worldMap.drawWorld(world);                          //draw terrain + sky
+    
+    //player stuff
+    Baloon.drawBaloons(PALLONI);                        //draw every Baloon in its position
+    Baloon.updateBaloons(PALLONI);                      //update the state of every Baloon (e.g. gravity)
+    Baloon.movementTurn(PALLONI, turn);                   //let the player move Baloon # "turn"
+    
+    //game started
+    if(gameStarted) {
+        //timer
+        if(!set) {
+            set = true;
+            updateGameState();
         }
     }
+    //game not started yet
+    else {
+        
+    }
+    //requestAnimationFrame(gameLoop);      --not used because of possible framerate loss
 }
 
+function keyDownHandler(e) {
+    //the next 4 are the classic WASD movement
+    if(e.keyCode == 37) 
+        Baloon.moveLeft(PALLONI,turn);
+    else if(e.keyCode == 38)
+        Baloon.moveUp(PALLONI,turn);
+    else if(e.keyCode == 39) 
+        Baloon.moveRight(PALLONI,turn);
+    else if(e.keyCode == 40)
+        Baloon.moveDown(PALLONI,turn);
+
+    else if(e.keyCode == 70){       //the "f" key, start the game (can't be undone atm)
+        gameStarted = true;
+    }
+    else if(e.keyCode == 79){       //the "o" key, edit terrain (only, can be undone)
+        editing = !editing;
+        if(!editing)
+            worldMap.fixWorld(world);
+        updateWorld();
+    }
+ 
+}
 
 function updateWorld(){
-    editing = !editing;
+    //editing = !editing;
     if(editing)
-        changeCursorCell();
+        document.body.style.cursor = "cell"; 
     else
-        restoreCursor();
-}
-
-function changeCursorCell() {
-    document.body.style.cursor = "cell"; 
-}
-
-function restoreCursor() {
-    document.body.style.cursor = 'default';
+        document.body.style.cursor = 'default';
 }
 
 function mouseClickHandler(e){
-    dragging = !dragging;
-    console.log(PALLONI.length);
+    if(editing)
+        dragging = !dragging;
 }
 
 function addBaloon(e) {
-    PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
-    cnt++;
-    console.log("Contatore: " + cnt);
+    if(!editing && !gameStarted) {
+        PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
+        cnt++;
+        console.log("Contatore: " + cnt);
+    }
 }
 
 function drawCursorIndicator(relativeX, relativeY){
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
     ctx.fillStyle = "#008B8B";
     ctx.fill();
     ctx.closePath();
@@ -124,30 +127,15 @@ function drawCursorIndicator(relativeX, relativeY){
 function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     var relativeY = e.clientY - canvas.offsetTop;
-    if(relativeX < canvas.width && dragging && editing && 
-        (relativeY < world[relativeX] + 20 && (relativeY > world[relativeX]))
-        ) {
-        //drawCursorIndicator(relativeX, relativeY);
-        removeWorldPart(relativeX, relativeY);
+    if(editing) {
+        drawCursorIndicator(relativeX, relativeY);
+        if(relativeX < canvas.width && dragging && (relativeY < world[relativeX] + 20 && (relativeY > world[relativeX]))) {
+            worldMap.removeWorldPart(world, relativeX, relativeY);
+        }
     }
 }
 
-
-function setupVariables(){
-    worldMap.canvas = document.getElementById("canvas");
-        
-    worldMap.STEP_MAX = 2.5;
-    worldMap.STEP_CHANGE = 1.0;
-    worldMap.BASE = worldMap.canvas.height;
-    worldMap.HEIGHT_MAX = worldMap.canvas.height/4;
-
-    worldMap.height = worldMap.BASE*3/4;
-    worldMap.slope = (Math.random() * worldMap.STEP_MAX) * 2 - worldMap.STEP_MAX;
-
-    worldMap.createWorld(world);
-
-}
-
+//timer
 function updateGameState(){
     var countDown = 6000;
     var now = 0;
