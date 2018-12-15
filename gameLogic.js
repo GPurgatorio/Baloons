@@ -1,3 +1,5 @@
+"use strict"
+
 //global settings
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
@@ -14,6 +16,7 @@ var editing = false;
 var dragging = false;
 var set = false;
 var gameStarted = false;
+var aiming = false;
 
 //gameLogic arguments
 var PALLONI = [];
@@ -41,9 +44,13 @@ function setupVariables(){
     worldMap.height = worldMap.BASE*3/4;
     worldMap.slope = (Math.random() * worldMap.STEP_MAX) * 2 - worldMap.STEP_MAX;
     worldMap.createWorld(world);
-    PALLONI.push(new Baloon(100,200,cnt));         //at least one to prevent errors     --TO BE REMOVE IN FINAL
+    Baloon.WEAPON_NUMBER = 1;
+    Baloon.SHOOTING_RADIUS = 15;
+    PALLONI.push(new Baloon(300,30,cnt));         //at least one to prevent errors     --TO BE REMOVED IN FINAL
     cnt++;
 }
+
+//(GS) -> to be moved in the gameStarted if condition
 
 //what actually happens in the game 60 times/second
 function gameLoop(){
@@ -55,7 +62,10 @@ function gameLoop(){
     //player stuff
     Baloon.drawBaloons(PALLONI);                        //draw every Baloon in its position
     Baloon.updateBaloons(PALLONI);                      //update the state of every Baloon (e.g. gravity)
-    Baloon.movementTurn(PALLONI, turn);                   //let the player move Baloon # "turn"
+    Baloon.movementTurn(PALLONI, turn);                 //let the player move Baloon # "turn"      (GS)
+
+    if(aiming)                              //(GS)
+        Baloon.drawAim(PALLONI, turn);
     
     //game started
     if(gameStarted) {
@@ -72,21 +82,44 @@ function gameLoop(){
     //requestAnimationFrame(gameLoop);      --not used because of possible framerate loss
 }
 
-function keyDownHandler(e) {
-    //the next 4 are the classic WASD movement
-    if(e.keyCode == 37) 
+function keyDownHandler(e) {                    //TO-DO: (check) try to pass instead of (palloni,turn) -> palloni[turn] : efficiency <> now?
+    //the next 4 are the classic WASD movement                          
+    if(e.keyCode == 37) {
         Baloon.moveLeft(PALLONI,turn);
-    else if(e.keyCode == 38)
-        Baloon.moveUp(PALLONI,turn);
-    else if(e.keyCode == 39) 
+        aiming = false;
+    }
+    if(e.keyCode == 39) {
         Baloon.moveRight(PALLONI,turn);
-    else if(e.keyCode == 40)
+        aiming = false;
+    }
+    if(e.keyCode == 40) {
         Baloon.moveDown(PALLONI,turn);
+        aiming = false;
+    }
+    else if(e.keyCode == 38) {
+        Baloon.moveUp(PALLONI,turn);
+        aiming = false;
+    }
+    
+    if(e.keyCode == 69 || e.keyCode == 81) {
+        if (e.keyCode == 69)       //the "e" key, aim (->)
+            Baloon.aimWeaponRight(PALLONI, turn);
+        else                       //the "q" key, aim (<-)
+            Baloon.aimWeaponLeft(PALLONI, turn);
+        aiming = true;
+    }
 
-    else if(e.keyCode == 70){       //the "f" key, start the game (can't be undone atm)
+    if(e.keyCode == 187)            //the "+" key, change weapon (->)
+        Baloon.weaponSwitchForward(PALLONI, turn);
+    if(e.keyCode == 189)            //the "-" key, change weapon (<-)
+        Baloon.weaponSwitchBackward(PALLONI, turn);
+
+    if(e.keyCode == 70){            //the "f" key, starts the game (can't be undone atm)
+        alert("Partita iniziata!");
         gameStarted = true;
     }
-    else if(e.keyCode == 79){       //the "o" key, edit terrain (only, can be undone)
+
+    if(!gameStarted && e.keyCode == 79){       //the "o" key, edit terrain (only, can be undone)
         editing = !editing;
         if(!editing)
             worldMap.fixWorld(world);
@@ -96,7 +129,6 @@ function keyDownHandler(e) {
 }
 
 function updateWorld(){
-    //editing = !editing;
     if(editing)
         document.body.style.cursor = "cell"; 
     else
@@ -110,8 +142,10 @@ function mouseClickHandler(e){
 
 function addBaloon(e) {
     if(!editing && !gameStarted) {
-        PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
-        cnt++;
+        if(e.clientY < world[e.clientX - canvas.offsetLeft]) {
+            PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
+            cnt++;
+        }
         console.log("Contatore: " + cnt);
     }
 }
@@ -119,7 +153,10 @@ function addBaloon(e) {
 function drawCursorIndicator(relativeX, relativeY){
     ctx.beginPath();
     ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
-    ctx.fillStyle = "#008B8B";
+    if(!dragging)
+        ctx.fillStyle = "#008B8B";
+    else
+        ctx.fillStyle = "#FF0000";
     ctx.fill();
     ctx.closePath();
 }
@@ -151,7 +188,7 @@ function updateGameState(){
             clearInterval(a);
             set = false;
             turn = (turn + 1) % cnt;
-            document.getElementById("demo").innerHTML = "EXPIRED";
+            document.getElementById("demo").innerHTML = "End Turn";
         }
     }, 1000);
 }

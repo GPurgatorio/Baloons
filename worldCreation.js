@@ -66,24 +66,17 @@ class worldMap {
     }
 
     static fixWorld(world){
-        var check;
-        var loop = true;
         for(var n = 0; n < 10; n++) {
-            check = true;
             for(var i = 1;i<world.length - 1;i++){
                 if(world[i] < world[i+1] + 20 || world[i] > world[i+1] - 20) {
                     world[i] -= (world[i]-world[i+1])/2;
-                    check = false;
                     console.log("added smth");
                 }
                 else if(world[i] < world[i-1] + 20 || world[i] > world[i-1] - 20) {
                     world[i] += (world[i]-world[i+1])/2;
-                    check = false;
                     console.log("removed smth");
                 }
             }
-            if(check) 
-                loop = false;
         }
     }
 }
