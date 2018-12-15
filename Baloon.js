@@ -13,8 +13,9 @@ class Baloon {
         this.myTurn = count;
         this.hp = 100;
         this.lastWeapon = 0;
-        this.aimX = coordX + 20;
-        this.aimBool = false;       //used to avoid some calculations in the aiming part (circle). Each X gets me two Ys -> I choose one
+        this.aimX = 0;
+        this.aimY = 0;
+        this.angleAim = 0;
     }
 
     static drawBaloons(array) {
@@ -123,19 +124,19 @@ class Baloon {
     //(x – h)^2 + (y – k)^2 = r^2       (h,k) = center
     static aimWeaponRight(array, turn){
         let obj = array[turn];
-        if(Math.abs(obj.aimX) == obj.ballRadius)        //Theoretically, Y = 0 in the circle
-            obj.aimBool = !obj.aimBool;
         if(obj.aimX <= obj.ballRadius - 2)          //TRY: -1 ?
-            obj.aimX += 2;
+            obj.angleAim += 2;
+        else if(obj.aimY <= obj.ballRadius - 2)
+            obj.angleAim += 2;
     }
     
 
     static aimWeaponLeft(array, turn){
         let obj = array[turn];
-        if(Math.abs(obj.aimX) == obj.ballRadius)        //Theoretically, Y = 0 in the circle
-            obj.aimBool = !obj.aimBool;
         if(obj.aimX >= - (obj.ballRadius -2))
-            obj.aimX -= 2;
+            obj.angleAim -= 2;
+        else if(obj.aimY >= -(obj.ballRadius - 2))
+            obj.angleAim -= 2;
     }
 
     static drawAim(array, turn){
@@ -146,7 +147,7 @@ class Baloon {
         //https://www.w3schools.com/tags/canvas_arc.asp
         
         if(obj.aimX >= obj.x){      // ->
-            if(obj.aimBool) {
+            if(obj.aimY < obj.y) {
                 sAngle = Math.PI * 1.5;
                 eAngle = Math.PI * 2;
             }
@@ -157,7 +158,7 @@ class Baloon {
         }
         
         else if(obj.aimX < obj.x){  //<-
-            if(obj.aimBool) {
+            if(obj.aimY < obj.y) {
                 sAngle = Math.PI;
                 eAngle = Math.PI * 1.5; 
             }
@@ -176,9 +177,12 @@ class Baloon {
 
         //point of where you're actually aiming (ctx.fillRect(10,10,1,1); // fill in the pixel at (10,10))
         //x = cx + r * cos(a) && y = cy + r * sin(a)
-        var whereX = obj.x + obj.ballRadius * Math.cos(sAngle);
-        var whereY = obj.y + obj.ballRadius * Math.sin(sAngle);
+        //var angle = Math.atan2(obj.aimY - obj.y, obj.aimX - obj.x);       //OMEGALUL
+
+        obj.aimX = obj.x + obj.ballRadius * Math.cos(obj.angleAim) * 3;
+        obj.aimY = obj.y + obj.ballRadius * Math.sin(obj.angleAim) * 3;
+        
         ctx.fillStyle = "#000000";
-        ctx.fillRect(whereX, whereY, 5, 5);
+        ctx.fillRect(obj.aimX-2, obj.aimY-2, 4, 4);
     }
 }

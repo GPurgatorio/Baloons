@@ -70,11 +70,9 @@ class worldMap {
             for(var i = 1;i<world.length - 1;i++){
                 if(world[i] < world[i+1] + 20 || world[i] > world[i+1] - 20) {
                     world[i] -= (world[i]-world[i+1])/2;
-                    console.log("added smth");
                 }
                 else if(world[i] < world[i-1] + 20 || world[i] > world[i-1] - 20) {
                     world[i] += (world[i]-world[i+1])/2;
-                    console.log("removed smth");
                 }
             }
         }
