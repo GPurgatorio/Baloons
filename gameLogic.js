@@ -1,8 +1,10 @@
 "use strict"
+//GPurgatorio - Final PI
 
 //global settings
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var selected = false;
 
 //keyboard settings
 var rightPressed = false;
@@ -13,6 +15,8 @@ var world = [];
 
 //gameLogic settings
 var editing = false;
+var removing = false;
+var adding = false;
 var dragging = false;
 var set = false;
 var gameStarted = false;
@@ -25,6 +29,7 @@ var team = 0;
 var turn = 0;
 
 //listeners
+//document.addEventListener("keyup", keyUpHandler, false);  
 document.addEventListener("keydown", keyDownHandler, false);            //keyboard DOWN
 document.addEventListener("mousemove", mouseMoveHandler, false);        //mouse MOVE
 document.addEventListener("click", mouseClickHandler, false);           //mouse CLICK
@@ -119,10 +124,9 @@ function keyDownHandler(e) {                    //TO-DO: (check) try to pass ins
         gameStarted = true;
     }
 
-    if(!gameStarted && e.keyCode == 79){       //the "o" key, edit terrain (only, can be undone)
+    if(!gameStarted && e.keyCode == 79){       //the "o" key, remove terrain
         editing = !editing;
-        if(!editing)
-            worldMap.fixWorld(world);
+        removing = !removing;
         updateWorld();
     }
  
@@ -167,7 +171,10 @@ function mouseMoveHandler(e) {
     if(editing) {
         drawCursorIndicator(relativeX, relativeY);
         if(relativeX < canvas.width && dragging && (relativeY < world[relativeX] + 20 && (relativeY > world[relativeX]))) {
-            worldMap.removeWorldPart(world, relativeX, relativeY);
+            if(removing)
+                worldMap.removeWorldPart(world, relativeX, relativeY);
+            //else 
+            //    worldMap.addWorldPart(world, relativeX, relativeY);
         }
     }
 }

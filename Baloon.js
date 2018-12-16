@@ -1,4 +1,5 @@
 "use strict"
+//GPurgatorio - Final PI
 
 class Baloon {
 
@@ -61,7 +62,7 @@ class Baloon {
 
     static moveUp(array, p) {
         let obj = array[p];
-        if(!obj.jumping) {
+        if(obj.y >= world[obj.x] - obj.ballRadius) {
             obj.jumping = true;
             obj.goingUp = true;
             obj.dy = -13;
@@ -92,6 +93,10 @@ class Baloon {
             obj.y += obj.dy;
             obj.dy += 1;
         }
+        if(obj.y < 10)
+            obj.y = 10;
+        if(obj.y > canvas.height)
+            obj.hp = 0;
     }
 
     static updateBaloons(array) {

@@ -1,7 +1,7 @@
 "use strict"
+//GPurgatorio - Final PI
 
 class worldMap {
-
     // creating the landscape
     static createWorld(world){
 
@@ -31,9 +31,9 @@ class worldMap {
     }
 
     static drawWorld(world){
-        
+        var h;
         for (var n = 0; n < world.length -1; n++) {
-            var h = world[n];
+            h = world[n];
             //https://www.w3schools.com/colors/colors_names.asp
             //terrain
             ctx.beginPath();
@@ -58,23 +58,47 @@ class worldMap {
         }
     }
 
-    static removeWorldPart(world, coordX, coordY){
-        for(var i = 0; i < 8; i++) {
-            world[coordX+i] += 10-i/2;
-            world[coordX-i] += 10-i/2;
+    static removeWorldPart(world, coordX, coordY) {
+        var x, d, a; 
+        if(coordX < 10)
+            x = coordX;
+        else
+            x = coordX - 10;
+        for(x; x < coordX + 11; x++) {
+            a = Math.abs(x - coordX);
+            d = 10 * Math.sin(Math.acos(a/10));
+            if(world[x] <= d + coordY)
+                world[x] = d + coordY;
         }
     }
 
-    static fixWorld(world){
-        for(var n = 0; n < 10; n++) {
-            for(var i = 1;i<world.length - 1;i++){
+    static addWorldPart(world, coordX, coordY) {
+        var x, d, a; 
+        if(coordX < 10)
+            x = coordX;
+        else
+            x = coordX - 10;
+        for(x; x < coordX + 11; x++) {
+            a = Math.abs(x - coordX);
+            d = 10 * Math.cos(Math.asin(a/10));
+            if(world[x] >= d - coordY)
+                world[x] = d - coordY;
+        }
+    }
+
+    //no need anymore
+    /*static fixWorld(world){
+        var n, i;
+        for(n = 0; n < 10; n++) {
+            for(i = 1;i<world.length - 1;i++){
                 if(world[i] < world[i+1] + 20 || world[i] > world[i+1] - 20) {
                     world[i] -= (world[i]-world[i+1])/2;
                 }
                 else if(world[i] < world[i-1] + 20 || world[i] > world[i-1] - 20) {
                     world[i] += (world[i]-world[i+1])/2;
                 }
-            }
+            }      
         }
-    }
+        world[i] += (world[i]-world[i-1]+1)/2;
+    }*/
 }
