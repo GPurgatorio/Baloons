@@ -17,6 +17,7 @@ class Baloon {
         this.aimX = 0;
         this.aimY = 0;
         this.angleAim = 0;
+        this.weapon = 0;
     }
 
     static drawBaloons(array) {
@@ -33,7 +34,7 @@ class Baloon {
 
     static moveRight(array, p) {
         let obj = array[p];
-        if(obj.x < canvas.width - obj.ballRadius){ 
+        if(obj.x < canvas.width - obj.ballRadius && obj.y <= world[obj.x+1] + 3){ 
             if(obj.jumping)
                 obj.x += 4;
             else
@@ -47,7 +48,7 @@ class Baloon {
 
     static moveLeft(array, p) {
         let obj = array[p];
-        if(obj.x > obj.ballRadius + 1) { 
+        if(obj.x > obj.ballRadius + 1 && obj.y <= world[obj.x-1] + 3) { 
             if(obj.jumping)
                 obj.x -= 4;
             else 
@@ -129,19 +130,13 @@ class Baloon {
     //(x – h)^2 + (y – k)^2 = r^2       (h,k) = center
     static aimWeaponRight(array, turn){
         let obj = array[turn];
-        if(obj.aimX <= obj.ballRadius - 2)          //TRY: -1 ?
-            obj.angleAim += 2;
-        else if(obj.aimY <= obj.ballRadius - 2)
-            obj.angleAim += 2;
+        obj.angleAim -= Math.PI * 5 / 180;
     }
     
 
     static aimWeaponLeft(array, turn){
         let obj = array[turn];
-        if(obj.aimX >= - (obj.ballRadius -2))
-            obj.angleAim -= 2;
-        else if(obj.aimY >= -(obj.ballRadius - 2))
-            obj.angleAim -= 2;
+        obj.angleAim += Math.PI * 5 / 180;
     }
 
     static drawAim(array, turn){
@@ -180,7 +175,7 @@ class Baloon {
         ctx.stroke();
         ctx.closePath();
 
-        //point of where you're actually aiming (ctx.fillRect(10,10,1,1); // fill in the pixel at (10,10))
+        //point of where you're actually aiming     (ctx.fillRect(10,10,1,1);   fill in the pixel at (10,10))
         //x = cx + r * cos(a) && y = cy + r * sin(a)
         //var angle = Math.atan2(obj.aimY - obj.y, obj.aimX - obj.x);       //OMEGALUL
 

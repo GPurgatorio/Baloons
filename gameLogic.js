@@ -21,6 +21,10 @@ var dragging = false;
 var set = false;
 var gameStarted = false;
 var aiming = false;
+var shooting = false;
+
+//weird stuff #mafia
+var proj;
 
 //gameLogic arguments
 var PALLONI = [];
@@ -70,15 +74,15 @@ function gameLoop(){
     Baloon.movementTurn(PALLONI, turn);                 //let the player move Baloon # "turn"      (GS)
 
     if(aiming)                              //(GS)
-        Baloon.drawAim(PALLONI, turn);
-    
+        Baloon.drawAim(PALLONI, turn);                  //if aiming, draw where you're aiming
+
     //game started
     if(gameStarted) {
-        //timer
-        if(!set) {
+        if(!set) {                                      //timer     TODO: set to 0 when hero dies
             set = true;
             updateGameState();
         }
+        
     }
     //game not started yet
     else {
@@ -101,7 +105,7 @@ function keyDownHandler(e) {                    //TO-DO: (check) try to pass ins
         Baloon.moveDown(PALLONI,turn);
         aiming = false;
     }
-    else if(e.keyCode == 38) {
+    if(e.keyCode == 38) {
         Baloon.moveUp(PALLONI,turn);
         aiming = false;
     }
@@ -112,6 +116,11 @@ function keyDownHandler(e) {                    //TO-DO: (check) try to pass ins
         else                       //the "q" key, aim (<-)
             Baloon.aimWeaponLeft(PALLONI, turn);
         aiming = true;
+    }
+
+    if(e.keyCode == 32) {           //"spacebar" key, shoot
+        shooting = true;
+        Weapon.shootDot(PALLONI,turn);
     }
 
     if(e.keyCode == 187)            //the "+" key, change weapon (->)
@@ -150,7 +159,6 @@ function addBaloon(e) {
             PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
             cnt++;
         }
-        console.log("Contatore: " + cnt);
     }
 }
 
@@ -191,9 +199,10 @@ function updateGameState(){
         // Output the result in an element with id="demo"
         document.getElementById("demo").innerHTML = seconds + "s ";
         
-        if (distance < 0) {
+        if (distance < 0 || PALLONI[turn].hp == 0) {
             clearInterval(a);
             set = false;
+            shooting = false;
             turn = (turn + 1) % cnt;
             document.getElementById("demo").innerHTML = "End Turn";
         }
