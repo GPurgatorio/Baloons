@@ -23,11 +23,10 @@ var gameStarted = false;
 var aiming = false;
 var shooting = false;
 
-//weird stuff #mafia
-var proj;
-
 //gameLogic arguments
 var PALLONI = [];
+var w;
+var projectiles = [];
 var cnt = 0;
 var team = 0;
 var turn = 0;
@@ -63,7 +62,7 @@ function setupVariables(){
 
 //what actually happens in the game 60 times/second
 function gameLoop(){
-    
+
     //world stuff
     ctx.clearRect(0, 0, canvas.width, canvas.height);   //clear previous screen
     worldMap.drawWorld(world);                          //draw terrain + sky
@@ -75,7 +74,9 @@ function gameLoop(){
 
     if(aiming)                              //(GS)
         Baloon.drawAim(PALLONI, turn);                  //if aiming, draw where you're aiming
-
+    if(projectiles.length != 0) {
+        Weapon.shootDot(projectiles,world);
+    }
     //game started
     if(gameStarted) {
         if(!set) {                                      //timer     TODO: set to 0 when hero dies
@@ -120,17 +121,24 @@ function keyDownHandler(e) {                    //TO-DO: (check) try to pass ins
 
     if(e.keyCode == 32) {           //"spacebar" key, shoot
         shooting = true;
-        Weapon.shootDot(PALLONI,turn);
+        console.log("debug");
+        w = new Weapon(PALLONI[turn].x, PALLONI[turn].y, PALLONI[turn].aimX, PALLONI[turn].aimY)
+        projectiles.push(w);
     }
 
-    if(e.keyCode == 187)            //the "+" key, change weapon (->)
+    /*if(e.keyCode == 187)            //the "+" key, change weapon (->)
         Baloon.weaponSwitchForward(PALLONI, turn);
     if(e.keyCode == 189)            //the "-" key, change weapon (<-)
         Baloon.weaponSwitchBackward(PALLONI, turn);
-
+    */
     if(e.keyCode == 70){            //the "f" key, starts the game (can't be undone atm)
         alert("Partita iniziata!");
         gameStarted = true;
+    }
+
+    if(e.keyCode == 189) {           //the "-" key, TO BE REMOVED IN FINAL, used to debug stuff
+        shooting = false;
+        projectiles.splice(0,1);
     }
 
     if(!gameStarted && e.keyCode == 79){       //the "o" key, remove terrain

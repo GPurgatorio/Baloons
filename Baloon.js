@@ -130,13 +130,13 @@ class Baloon {
     //(x – h)^2 + (y – k)^2 = r^2       (h,k) = center
     static aimWeaponRight(array, turn){
         let obj = array[turn];
-        obj.angleAim -= Math.PI * 5 / 180;
+        obj.angleAim += Math.PI * 5 / 180;
     }
     
 
     static aimWeaponLeft(array, turn){
         let obj = array[turn];
-        obj.angleAim += Math.PI * 5 / 180;
+        obj.angleAim -= Math.PI * 5 / 180;
     }
 
     static drawAim(array, turn){
@@ -146,8 +146,8 @@ class Baloon {
         //to see why sAngle and eAngle are like this:
         //https://www.w3schools.com/tags/canvas_arc.asp
         
-        if(obj.aimX >= obj.x){      // ->
-            if(obj.aimY < obj.y) {
+        if(obj.aimX >= 0){      // ->
+            if(obj.aimY < 0) {
                 sAngle = Math.PI * 1.5;
                 eAngle = Math.PI * 2;
             }
@@ -157,8 +157,8 @@ class Baloon {
             }
         }
         
-        else if(obj.aimX < obj.x){  //<-
-            if(obj.aimY < obj.y) {
+        else if(obj.aimX < 0){  //<-
+            if(obj.aimY < 0) {
                 sAngle = Math.PI;
                 eAngle = Math.PI * 1.5; 
             }
@@ -179,10 +179,10 @@ class Baloon {
         //x = cx + r * cos(a) && y = cy + r * sin(a)
         //var angle = Math.atan2(obj.aimY - obj.y, obj.aimX - obj.x);       //OMEGALUL
 
-        obj.aimX = obj.x + obj.ballRadius * Math.cos(obj.angleAim) * 3;
-        obj.aimY = obj.y + obj.ballRadius * Math.sin(obj.angleAim) * 3;
+        obj.aimX = obj.ballRadius * Math.cos(obj.angleAim) * 3;
+        obj.aimY = obj.ballRadius * Math.sin(obj.angleAim) * 3;
         
         ctx.fillStyle = "#000000";
-        ctx.fillRect(obj.aimX-2, obj.aimY-2, 4, 4);
+        ctx.fillRect(obj.x + obj.aimX -2, obj.y + obj.aimY -2, 4, 4);
     }
 }
