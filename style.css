@@ -1,0 +1,112 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  font-family: Tahoma;
+}
+
+.button {
+  background: #fff;
+  min-width: 100px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: #444;
+  margin-bottom: 20px;
+  padding: 5px 20px;
+  cursor: pointer;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  opacity: 1;
+  transition: background-color 0.2s, transform 0.3s, height 0.2s, padding 0.2s, min-width 0.2s, font-size 0.2s;
+}
+.button.big {
+  width: 200px;
+  height: 60px;
+  line-height: 60px;
+}
+.button:hover {
+  background: #a1d6ec;
+}
+.button.big:hover {
+  transform: scale(1.2);
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+.container.game {
+  position: absolute;
+  z-index: 3;
+  bottom: 100%;
+  transition: opacity 0.8s;
+  background: #ededed;
+  opacity: 0;
+}
+.container.splash {
+  background: url(images/splash.jpeg) no-repeat center/cover;
+  flex-direction: column;
+}
+
+
+.content {
+  display: flex; 
+}
+
+.sep {
+  flex: 0 0 100%;
+}
+
+.game-canvas { 
+  background: #eee; 
+  margin-right: 50px;
+  transition: margin 0.2s;
+}
+
+.timer {
+  text-align: center;
+  font-size: 60px;
+  position: absolute; 
+  top: 20px; 
+  left: 650px;
+}
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  display: none;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 2;
+  width: 60%;
+  height: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.tutorial {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}

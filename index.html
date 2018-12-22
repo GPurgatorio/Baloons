@@ -2,45 +2,94 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Final PI</title>
-	
-    <style>
-    	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
-
-        p {
-            text-align: center;
-            font-size: 60px;
-            margin-top: 0px;
-        }
-    </style>
+    <title>Baloons</title>
 	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.5.0/css/all.css' integrity='sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU' crossorigin='anonymous'>
-	
+    <link rel='stylesheet' href='style.css'>
+    <script src="layout.js"></script>
 </head>
-<body>
-	<!--<center>-->
-    <!--</center>-->
-    <!-- "canvas" width=1349 height=627-->        
-    <canvas id="canvas" width=800 height=500> </canvas>
-
-    <!--<button id="removeWorld" style="position:absolute; top:0px; left:300px; width:25px; height:25px; font-size:20px" onclick="worldMap.removeWorldPart()"> <i class='fas fa-edit'></i></button>-->
-    <!--<button style="position: absolute; top:200px; left:20px;" onclick="myFunction()">Click</button>-->
-
-    <script src="worldCreation.js"> </script>
-    <script src="Baloon.js"> </script>
-    <script src="gameLogic.js"> </script>
-    <script src="Weapon.js"> </script>
-
-
-    <!-- TIMER -->
-    <p id="demo" style="position:absolute; top:20px; left: 650px"></p>
+<body> 
+    <div class="modal-overlay" id="modal-overlay" onclick="closeInfos()"></div>
+    <div class="modal" id="infos">
+        <div class="tutorial">
+            <P ALIGN=Center>Ciao! <br /> </P>
+            Nel caso non lo sapessi, stai giocando a Baloons, un progetto per l'esame di Programmazione d'Interfacce dell'Università di Pisa.<br />
+            I più attenti noteranno che a livello di idee è estremamente ispirato da Worms, mentre ai meno attenti suggerisco di farsi una partitina a tale gioco.<br />
+            <br />
+            Il progetto è scritto in Javascript, con chiaramente accenni di HTML e CSS per rendere il tutto più fruibile e gradevole all'utente.<br />
+            Le idee base che sono state seguite durante lo sviluppo di questo progetto sono le seguenti:<br />
+            <OL>
+                <LI>Cercare di evitare d'importare librerie esterne. Nello stato attuale del progetto, nessun importo è stato effettuato. Questo vuol dire che tutto quel che vedete è tramite cerchi, linee o raramente rettangoli.<br />
+                <LI> Cercare di proporre un'interfaccia intuitiva ed esteticamente accettabile che permetta di modificare a proprio piacimento la partita che verrà giocata.<br />
+                <LI> Cercare di riproporre un gioco base della mia infanzia, in una sua versione semplificata.<br />
+            </OL>
+            <br />
+            Ci sono alcune scelte progettuali che ovviamente alterano il gioco e, se non conosciute, potrebbero portare a non poca confusione.<br />
+            La più importante tra queste è quella dove l'intero mondo è controllato solo da altezze, tutte salvate in un array.<br />
+            Questo implica varie cose, tra cui l'impossibilità di avere un terreno concavo, ovvero l'altezza di questo arriverà ad un certo punto e quel che è sotto è terreno, quel che è sopra è cielo.<br />
+                <br />
+            Ciò comporta anche delle conseguenze a livello di gioco, come durante la fase di modifica del terreno (in fase di setup della partita o in gioco stesso post-esplosione di un'arma) l'altezza del terreno può variare enormemente.<br />
+            Non scendo troppo nei dettagli, ma tenete conto di questa particolarità!    <br />
+            <br />
+            È possibile inserire Baloons senza alcun limite (se non il vostro limite di computazione) ed è possibile modificare o rigenerare il terreno a piacimento.<br />
+            <br />
+            <br />
+            <P ALIGN=Center><B>TUTORIAL</B> </P> <br />
+            Una volta iniziata la partita, sarà possibile muovere il primo Baloon posizionato durante la fase di editing.<br />
+            Ogni turno è gestito da un timer che, una volta scaduto, passa al turno successivo.<br />
+            Una volta che un'arma viene sparata, se sono rimasti 5 o più secondi del proprio turno, il numero di secondi rimanenti scenderà a 4 per gestire la propria ritirata. <br />
+            <br />
+            I tasti per giocare sono i seguenti:<br />
+            <BLOCKQUOTE>
+                ↑ : Salta<br />
+                ← : Muovi a sinistra<br />
+                → : Muovi a destra<br />
+                ↓ : Accellera la caduta<br />
+                Q : Mira (v. antiorario)<br />
+                E : Mira (v. orario)<br />
+                Space : Spara (tieni premuto per aumentare la potenza)<br />
+                + : Cambia arma (avanti)<br />
+                - : Cambia arma (indietro)<br />
+            </BLOCKQUOTE>
+            <br />
+            Riguardo le armi:
+            <BLOCKQUOTE>
+                <U>Bazooka:</U>     Sparato in direzione della mira. Non rimbalza. <br />
+                <U>Sfera:</U>       Prosegue nella direzione (x) della mira. Si ferma appena trova un'altezza superiore alla propria. <br />
+                <U>AnalogClock:</U> (piccolo Easter Egg riguardo il corso) Sparato in direzione della mira. Rimbalza. Forse nelle opzioni c'è qualcosa per far smettere quello strano effetto di flicker.. <br />
+            </BLOCKQUOTE>
+            <br />
+            Per qualsiasi dubbio, non esitare a comprare Worms Armageddon.<br />
+            Se invece dovessi riscontrare qualcosa di inaspettato, contattami -> giulio.purgatorio at gmail dot com <br />
+            I codici sorgenti sono reperibili alla mia pagina Github, <A HREF="https://github.com/GPurgatorio/Final-PI">QUI</A>. <br />
+            <br />
+            <I>- Giulio Purgatorio</I>
+        </div>
+    </div>
     
-	<!--<script src="file.js"> </script>-->
-	<!--
-	<select id="cursor">
-	<option>default</option>
-	<option>cell</option>
-	</select>
-	-->
+    <div class="container game" id="game">
+        <div class="content">
+            <div class="game-box">
+                <canvas id="canvas" class="game-canvas" width="800" height="500"></canvas>
+            
+                <script src="worldCreation.js"> </script>
+                <script src="Baloon.js"> </script>
+                <script src="gameLogic.js"> </script>
+                <script src="Weapon.js"> </script>
+            </div>
+            <div class="actions-box">
+                <div class="button" onClick="addBaloons()">Aggiungi Baloons</div>
+                <div class="button" onClick="editTerrain()">Elimina Terreno</div>
+                <div class="button" onClick="hideButtons()">Inizia Partita</div>
+                <div class="button" onClick="restartSetup()">Restart</div>
+            </div>
+        </div>
+
+        <p id="timer" class="timer"></p>
+    </div>
+
+    <div class="container splash">
+        <div class="button big" onclick="openGame()">Setup Game</div>
+        <div class="button big" onclick="openInfos()">Info</div>
+    </div>
 </body>
 </html>

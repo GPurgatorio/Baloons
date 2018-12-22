@@ -86,6 +86,44 @@ class worldMap {
         }
     }
 
+    static isOccupied(array, coordX, pos) {
+        var x;
+        if(coordX < 10)
+            x = coordX;
+        else    
+            x = coordX - 10;
+        for(var n = 0; n < array.length; n++){
+            if(n == pos)
+                continue;
+            var t = array[n].x - 21;
+            var z = array[n].x + 21;            //necessari perché altrimenti NaN, non posso mettere espressioni nei compare
+            if(x > t && x < z) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static terrainHit(world, coordX, coordY, weaponType) {
+        var x, d, a, explosionR; 
+        if(weaponType == 0)
+            explosionR = 25;
+        else if (weaponType == 1)
+            explosionR = 35;
+        else if(weaponType == 2)
+            explosionR = 50;
+        if(coordX < explosionR)
+            x = coordX;
+        else
+            x = coordX - explosionR;
+        for(x; x < coordX + explosionR + 1; x++) {
+            a = Math.abs(x - coordX);
+            d = explosionR * Math.sin(Math.acos(a/explosionR));
+            if(world[Math.floor(x)] <= d + coordY)
+                world[Math.floor(x)] = d + coordY;
+        }
+    }
+
     //no need anymore
     /*static fixWorld(world){
         var n, i;
