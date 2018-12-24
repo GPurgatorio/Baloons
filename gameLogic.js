@@ -4,6 +4,7 @@
 //global settings
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var menu = false;
 var world = [];
 
 //gameLogic settings
@@ -17,6 +18,7 @@ var set = false;
 var winnable = false;
 var ended = false;
 var gameStarted = false;
+var antiBugBoolean = false;
 var aiming = false;
 var shooting = false;
 var alreadyShot = false;
@@ -47,7 +49,7 @@ document.addEventListener("click", mouseClickHandler, false);
 
 //actual flow of the program
 setupVariables();
-setInterval(gameLoop,1000/60);          //loop
+setInterval(gameLoop,1000/60);          
 
 //sets up used variables
 function setupVariables(){
@@ -61,8 +63,6 @@ function setupVariables(){
     worldMap.createWorld(world);
     Baloon.WEAPON_NUMBER = 3;
 }
-
-//(GS) -> to be moved in the gameStarted if condition
 
 //what actually happens in the game 60 times/second
 function gameLoop(){
@@ -81,31 +81,42 @@ function gameLoop(){
 
         if(cnt > 1)
             winnable = true;
+
         if(!ended && winnable && cnt == 1) {
             //vai ad un menù di riepilogo, fine della partita
             alert("Fine!");
             ended = true;
         }
 
-        if(!set && !ended) {                                          //timer
+        if(!set && !ended) {                                //timer
             set = true;
             updateGameState();
         }
 
+        if(deadBaloon && turn == cnt) {                         //maybe ?
+            turn--;
+            antiBugBoolean = true;
+        }
+
         if(PALLONI.length!=0) {
-            if(PALLONI[turn].hp == 0)
+            if(PALLONI[turn] == null || PALLONI[turn].hp == 0)
                 deadBaloon = true;
+
             Baloon.drawBaloons(PALLONI);
             Baloon.updateBaloons(PALLONI);
-            Baloon.movementTurn(PALLONI, turn);
+
+            if(!deadBaloon) {
+                Baloon.movementTurn(PALLONI, turn);
             
-            if(aiming)                                              
-                Baloon.drawAim(PALLONI, turn);
+                if(aiming)                                              
+                    Baloon.drawAim(PALLONI, turn);
+            }
 
             if(projectiles.length != 0) {                           
                 alreadyShot = true;
                 if(projectiles[0].weapon == 0)
                     Weapon.shootRect(projectiles);
+
                 else if(projectiles[0].weapon == 1) 
                     Weapon.shootBall(projectiles, world);
             
@@ -114,11 +125,11 @@ function gameLoop(){
                         Weapon.shootAnalogClock(projectiles);
                     else if(doubleBufferCnt >= 60)
                         doubleBufferCnt = 0;
-                    doubleBufferCnt = (doubleBufferCnt + 1)
+                    doubleBufferCnt = (doubleBufferCnt + 1);
                 }
 
                 //if projectile shot goes beyond the canvas in some direction (not topside)
-                if(projectiles[0].x < 0 || projectiles[0].x > canvas.width || projectiles[0].y > canvas.heigth)
+                if(projectiles[0].x < 0 || projectiles[0].x > canvas.width || projectiles[0].y > canvas.height)
                     projectiles.splice(0,1);
                 //if projectile shot hits the ground || stucked at some point, forcing explosion..
                 else if(projectiles[0].weapon == 1) {
@@ -147,7 +158,7 @@ function gameLoop(){
 
 function keyDownHandler(e) {
    
-    if(gameStarted && !stopMoving){                  
+    if(gameStarted && !stopMoving) {                  
         if(e.keyCode == 37) {
             Baloon.moveLeft(PALLONI,turn);
             aiming = false;
@@ -184,6 +195,12 @@ function keyDownHandler(e) {
             Baloon.weaponSwitchForward(PALLONI, turn); 
         if(e.keyCode == 189)                                        //the "-" key, change weapon (<-)
             Baloon.weaponSwitchBackward(PALLONI, turn);
+
+        if(e.keyCode == 27) {                                        //the "esc" key, menù maybe?
+            menu = !menu;
+            if(menu)
+                slidePause();
+        }
     }
 
     if(e.keyCode == 191) {                                          //debug purpose, "ù" 
@@ -194,7 +211,7 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
-    if(gameStarted && PALLONI.length != 0) {
+    if(gameStarted && PALLONI.length != 0 && !alreadyShot) {
         if(e.keyCode == 32) {
             w = new Weapon(PALLONI[turn].x, PALLONI[turn].y, PALLONI[turn].aimX, PALLONI[turn].aimY, sbadabum, PALLONI[turn].weapon)
             projectiles.push(w);
@@ -260,7 +277,9 @@ function updateGameState(){
     forceExplosion = false;
     alreadyShot = false;
     projectileRIP = false;
+    shooting = false;
     exploding = 0;
+    antiBugBoolean = false;
     var alreadyDidThis = false;
     var countDown = 15000;
     var now = 0;
@@ -274,27 +293,27 @@ function updateGameState(){
         else
             seconds = 0;
 
-        //Shows seconds left for the turn
-        document.getElementById("timer").innerHTML = seconds + "s ";
-
         if(shooting == true) {
             if(seconds > 4 && !alreadyDidThis) {
                 countDown = 4000;
                 now = 0;
                 seconds = 4;
                 alreadyDidThis = true;
-                shooting = false;
             }
         }
+
+        //Shows seconds left for the turn
+        document.getElementById("timer").innerHTML = seconds + "s ";
 
         if(distance <= 0)
             stopMoving = true;
 
-        if (projectiles[0] == null && (distance <= 0 || deadBaloon)) {
+        if (projectiles[0] == null && (distance <= 0 || deadBaloon || antiBugBoolean)) {
             clearInterval(a);
             set = false;
             shooting = false;
             sbadabum = 0;            
+
             if(!deadBaloon)
                 turn = (turn + 1) % cnt;
             if(ended)

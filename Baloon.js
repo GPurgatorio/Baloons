@@ -13,9 +13,9 @@ class Baloon {
         this.goingUp = false;
         this.myTurn = count;
         this.hp = 100;
-        this.aimX = 0;
-        this.aimY = 0;
-        this.angleAim = 0;
+        this.aimX = 5;
+        this.aimY = 5;
+        this.angleAim = Math.PI * 1.75;
         this.weapon = 0;
         this.color = Baloon.getRandomColor();           //some colors are not appreciated with the background eheh
     }

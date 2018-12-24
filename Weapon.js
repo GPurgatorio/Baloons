@@ -90,7 +90,7 @@ class Weapon {
         //body
         ctx.beginPath();
         ctx.arc(obj.x, obj.y, radius, 0, 2 * Math.PI);
-        if(obj.dy == 0 && obj.dy == 0)
+        if(obj.dx == 0 && obj.dy == 0)
             ctx.fillStyle = 'yellow';
         else
             ctx.fillStyle = 'white';

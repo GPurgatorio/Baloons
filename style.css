@@ -34,6 +34,18 @@ body {
 .button.big:hover {
   transform: scale(1.2);
 }
+.button.red {
+  background: #ec644b;
+}
+.button.hidden {
+  height: 0;
+  padding: 0;
+  font-size: 0;
+  min-width: 0;
+}
+.button.modal-button {
+  width: 200px;
+}
 
 .container {
   width: 100%;
@@ -50,11 +62,17 @@ body {
   background: #ededed;
   opacity: 0;
 }
+.container.game.shown {
+  bottom: 0;
+  opacity: 1;
+}
 .container.splash {
   background: url(images/splash.jpeg) no-repeat center/cover;
   flex-direction: column;
 }
 
+.game-box {
+}
 
 .content {
   display: flex; 
@@ -72,10 +90,18 @@ body {
 
 .timer {
   text-align: center;
-  font-size: 60px;
+  font-size: 40px;
   position: absolute; 
-  top: 20px; 
-  left: 650px;
+  pointer-events: none;
+  top: 70px; 
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0 30px;
+  line-height: 50px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 100rem;
 }
 
 .modal-overlay {
@@ -87,6 +113,10 @@ body {
   z-index: 1;
   display: none;
 }
+.modal-overlay.shown {
+  display: block;
+  z-index: 4;
+}
 
 .modal {
   background: #fff;
@@ -96,13 +126,35 @@ body {
   z-index: 2;
   width: 60%;
   height: 60%;
-  top: 50%;
+  bottom: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 50%);
   display: none;
   justify-content: center;
   align-items: center;
   padding: 50px;
+}
+.modal.vertical {
+  flex-direction: column;
+}
+.modal.transparent {
+  bottom: 100%;
+  transform: translateX(-50%);
+  transition: bottom 0.5s, transform 0.5s;
+  background: transparent;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+  display: flex;
+}
+.modal.pause.shown {
+  z-index: 5;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+}
+.modal.infos.shown {
+  display: flex;
+  z-index: 5;
 }
 
 .tutorial {
