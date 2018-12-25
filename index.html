@@ -7,8 +7,8 @@
     <link rel='stylesheet' href='style.css'>
 </head>
 <body> 
-    <div class="modal-overlay" id="modal-overlay" onclick="closeInfos(); unslidePause()"></div>
-    <div class="modal infos" id="infos">
+    <div class="modal-overlay" id="modal-overlay" onclick="closeInfos()"></div>
+    <div class="modal" id="infos">
         <div class="tutorial">
             <P ALIGN=Center>Ciao! <br /> </P>
             Nel caso non lo sapessi, stai giocando a Baloons, un progetto per l'esame di Programmazione d'Interfacce dell'Università di Pisa.<br />
@@ -64,15 +64,16 @@
             <I>- Giulio Purgatorio</I>
         </div>
     </div>
-    <div class="modal pause vertical transparent" id="pause">
-        <div class="button modal-button" id="return">Ritorna alla partita</div>
-        <div class="button modal-button" id="settings">Impostazioni</div>
-        <div class="button modal-button" id="exit">Esci</div>
+    <div class="modal vertical transparent" id="pause">
+        <div class="button" id="return">Ritorna alla partita</div>
+        <div class="button" id="settings">Impostazioni</div>
+        <div class="button" id="exit">Esci</div>
     </div>
     
     <div class="container game" id="game">
         <div class="content">
             <p id="timer" class="timer"></p>
+            <!--<p id="announcer" class="announcer"></p>-->
             <div class="game-box">
                 <canvas id="canvas" class="game-canvas" width="800" height="500"></canvas>
             
@@ -83,10 +84,10 @@
                 <script src="gameLogic.js"> </script>
             </div>
             <div class="actions-box">
-                <div class="button setup" id="adding" onClick="addBaloons()">Aggiungi Baloons</div>
-                <div class="button setup" id="editing" onClick="editTerrain()">Elimina Terreno</div>
-                <div class="button setup" onClick="hideButtons()">Inizia Partita</div>
-                <div class="button setup" onClick="restartSetup()">Restart</div>
+                <div class="button" id="adding" onClick="addBaloons()">Aggiungi Baloons</div>
+                <div class="button" id="editing" onClick="editTerrain()">Elimina Terreno</div>
+                <div class="button" onClick="hideButtons()">Inizia Partita</div>
+                <div class="button" onClick="restartSetup()">Restart</div>
             </div>
         </div>
     </div>

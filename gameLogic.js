@@ -93,9 +93,9 @@ function gameLoop(){
             updateGameState();
         }
 
-        if(deadBaloon && turn == cnt) {                         //maybe ?
-            turn--;
+        if(deadBaloon && turn == cnt) {                     //maybe ?
             antiBugBoolean = true;
+            turn = 0;
         }
 
         if(PALLONI.length!=0) {

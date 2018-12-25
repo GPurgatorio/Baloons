@@ -37,12 +37,7 @@ class Baloon {
                 ctx.arc(obj.x, obj.y, obj.ballRadius, 0, Math.PI*2);
                 ctx.fillStyle = obj.color;
                 ctx.fill();
-                if(obj.weapon == 0)
-                    ctx.fillText("Arma: Bazooka", obj.x, obj.y - obj.ballRadius - 5);
-                else if(obj.weapon == 1)
-                    ctx.fillText("Arma: Sfera", obj.x, obj.y - obj.ballRadius - 5);        
-                else if(obj.weapon == 2)
-                    ctx.fillText("Arma: Analog Clock", obj.x, obj.y - obj.ballRadius - 5);
+                ctx.fillText(obj.hp, obj.x - 8, obj.y - obj.ballRadius - 5);
                 ctx.closePath();
             }
         }
@@ -154,6 +149,13 @@ class Baloon {
     static weaponSwitchForward(array, turn){
         var obj = array[turn];
         obj.weapon = (obj.weapon + 1) % Baloon.WEAPON_NUMBER;
+        /*
+        if(obj.weapon == 0)
+            document.getElementById("announcer").innerHTML="Arma: Bazooka";
+        else if(obj.weapon == 1)
+            document.getElementById("announcer").innerHTML="Arma: Sfera";
+        else if(obj.weapon == 2)
+            document.getElementById("announcer").innerHTML="Arma: Analog Clock";*/
     }
 
     static weaponSwitchBackward(array, turn){
@@ -161,7 +163,13 @@ class Baloon {
         if(obj.weapon != 0)
             obj.weapon = obj.weapon - 1;
         else
-            obj.weapon = Baloon.WEAPON_NUMBER - 1;
+            obj.weapon = Baloon.WEAPON_NUMBER - 1;/*
+        if(obj.weapon == 0)
+            document.getElementById("announcer").innerHTML="Arma: Bazooka";
+        else if(obj.weapon == 1)
+            document.getElementById("announcer").innerHTML="Arma: Sfera";
+        else if(obj.weapon == 2)
+            document.getElementById("announcer").innerHTML="Arma: Analog Clock";*/
     }
 
     static aimWeaponRight(array, turn){
