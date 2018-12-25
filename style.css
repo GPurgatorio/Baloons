@@ -37,6 +37,15 @@ body {
 .button.red {
   background: #ec644b;
 }
+.button.hidden {
+  height: 0;
+  padding: 0;
+  font-size: 0;
+  min-width: 0;
+}
+.button.modal-button {
+  width: 200px;
+}
 
 .container {
   width: 100%;
@@ -52,6 +61,10 @@ body {
   transition: opacity 0.8s;
   background: #ededed;
   opacity: 0;
+}
+.container.game.shown {
+  bottom: 0;
+  opacity: 1;
 }
 .container.splash {
   background: url(images/splash.jpeg) no-repeat center/cover;
@@ -100,6 +113,10 @@ body {
   z-index: 1;
   display: none;
 }
+.modal-overlay.shown {
+  display: block;
+  z-index: 4;
+}
 
 .modal {
   background: #fff;
@@ -109,21 +126,35 @@ body {
   z-index: 2;
   width: 60%;
   height: 60%;
-  top: 50%;
+  bottom: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 50%);
   display: none;
   justify-content: center;
   align-items: center;
   padding: 50px;
 }
 .modal.vertical {
-  transition: bottom 0.3s;
-  bottom: 100%;
+  flex-direction: column;
 }
 .modal.transparent {
+  bottom: 100%;
+  transform: translateX(-50%);
+  transition: bottom 0.5s, transform 0.5s;
   background: transparent;
   box-shadow: none;
+  width: auto;
+  height: auto;
+  display: flex;
+}
+.modal.pause.shown {
+  z-index: 5;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+}
+.modal.infos.shown {
+  display: flex;
+  z-index: 5;
 }
 
 .tutorial {

@@ -1,16 +1,15 @@
 function openGame() {
-    document.getElementById('game').style.bottom = 0;
-    document.getElementById('game').style.opacity = 1;
+    document.getElementById('game').classList.add('shown');
 }
 
 function openInfos() {
-    document.getElementById('modal-overlay').style.display = 'block';
-    document.getElementById('infos').style.display = 'flex';
+    document.getElementById('modal-overlay').classList.add('shown');
+    document.getElementById('infos').classList.add('shown');
 }
 
 function closeInfos() {
-    document.getElementById('modal-overlay').style.display = 'none';
-    document.getElementById('infos').style.display = 'none';
+    document.getElementById('modal-overlay').classList.remove('shown');
+    document.getElementById('infos').classList.remove('shown');
 }
 
 function hideButtons() {
@@ -20,12 +19,9 @@ function hideButtons() {
     adding = false;
     removing = false;
     
-    var buttons = document.getElementsByClassName('button');
+    var buttons = document.getElementsByClassName('setup');
     for (var i = 0; i < buttons.length; i++) {
-        buttons[i].style.height = 0;
-        buttons[i].style.padding = 0;
-        buttons[i].style.fontSize = 0;
-        buttons[i].style.minWidth = 0;
+        buttons[i].classList.add('hidden');
     }
     document.getElementById('canvas').style.marginRight = 0;
 }
@@ -61,10 +57,16 @@ function restartSetup(){
 }
 
 function slidePause() {
-    overlay = document.getElementById('modal-overlay');
-    overlay.style.display = 'block';
-    overlay.style.zIndex = '4';
-    var pause = document.getElementById('pause');
-    pause.style.display = 'flex';
-    pause.style.zIndex = '5';
+    document.getElementById('modal-overlay').classList.add('shown');
+    document.getElementById('pause').classList.add('shown');
+}
+
+function unslidePause() {
+    document.getElementById('pause').classList.remove('shown');
+}
+
+function unslideResume(){
+    menu = false;
+    unslidePause();
+    document.getElementById('modal-overlay').classList.remove('shown');
 }
