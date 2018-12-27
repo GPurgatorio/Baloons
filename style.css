@@ -71,8 +71,9 @@ body {
   flex-direction: column;
 }
 
+/*
 .game-box {
-}
+}*/
 
 .content {
   display: flex; 
@@ -88,7 +89,7 @@ body {
   transition: margin 0.2s;
 }
 
-.timer {
+.timer, .announcer {
   text-align: center;
   font-size: 40px;
   position: absolute; 
@@ -102,6 +103,15 @@ body {
   background: rgba(0, 0, 0, 0.7);
   color: #fff;
   border-radius: 100rem;
+}
+
+.announcer {
+  font-size: 20px;
+  top: 500px;
+  background: rgba(0, 0, 0, 0.3);
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
 }
 
 .modal-overlay {

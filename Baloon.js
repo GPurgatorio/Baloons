@@ -149,13 +149,12 @@ class Baloon {
     static weaponSwitchForward(array, turn){
         var obj = array[turn];
         obj.weapon = (obj.weapon + 1) % Baloon.WEAPON_NUMBER;
-        /*
         if(obj.weapon == 0)
-            document.getElementById("announcer").innerHTML="Arma: Bazooka";
+            document.getElementById("announcer").innerHTML="Arma attuale: Bazooka";
         else if(obj.weapon == 1)
-            document.getElementById("announcer").innerHTML="Arma: Sfera";
+            document.getElementById("announcer").innerHTML="Arma attuale: Sfera";
         else if(obj.weapon == 2)
-            document.getElementById("announcer").innerHTML="Arma: Analog Clock";*/
+            document.getElementById("announcer").innerHTML="Arma attuale: Analog Clock";
     }
 
     static weaponSwitchBackward(array, turn){
@@ -163,13 +162,13 @@ class Baloon {
         if(obj.weapon != 0)
             obj.weapon = obj.weapon - 1;
         else
-            obj.weapon = Baloon.WEAPON_NUMBER - 1;/*
+            obj.weapon = Baloon.WEAPON_NUMBER - 1;
         if(obj.weapon == 0)
-            document.getElementById("announcer").innerHTML="Arma: Bazooka";
+            document.getElementById("announcer").innerHTML="Arma attuale: Bazooka";
         else if(obj.weapon == 1)
-            document.getElementById("announcer").innerHTML="Arma: Sfera";
+            document.getElementById("announcer").innerHTML="Arma attuale: Sfera";
         else if(obj.weapon == 2)
-            document.getElementById("announcer").innerHTML="Arma: Analog Clock";*/
+            document.getElementById("announcer").innerHTML="Arma attuale: Analog Clock";
     }
 
     static aimWeaponRight(array, turn){
@@ -200,7 +199,7 @@ class Baloon {
             }
         }
         
-        else if(obj.aimX < 0){  //<-
+        else if(obj.aimX < 0){  // <-
             if(obj.aimY < 0) {
                 sAngle = Math.PI;
                 eAngle = Math.PI * 1.5; 
@@ -252,10 +251,19 @@ class Baloon {
             //console.log("Se obj.x " + obj.x + " > t: " + t + " OR obj.x < " + z);
             if(Math.floor(obj.x) > t && Math.floor(obj.x) < z) {
                 dmg -= Math.abs(coordX - obj.x);
-                obj.hp -= Math.floor(dmg);
-                //console.log("Hit for " + dmg + " hp");
+                obj.hp -= Math.abs(Math.floor(dmg));
             }
         }
 
+    }
+
+    static announceWeapon(array, turn) {
+        var obj = array[turn];
+        if(obj.weapon == 0)
+            document.getElementById("announcer").innerHTML="Bazooka";
+        else if(obj.weapon == 1)
+            document.getElementById("announcer").innerHTML="Sfera";
+        else if(obj.weapon == 2)
+            document.getElementById("announcer").innerHTML="Analog Clock";
     }
 }

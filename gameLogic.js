@@ -50,6 +50,7 @@ document.addEventListener("click", mouseClickHandler, false);
 //actual flow of the program
 setupVariables();
 setInterval(gameLoop,1000/60);          
+//gameLoop();
 
 //sets up used variables
 function setupVariables(){
@@ -154,6 +155,7 @@ function gameLoop(){
             }
         }
     }
+    //requestAnimationFrame(gameLoop);
 }
 
 function keyDownHandler(e) {
@@ -182,6 +184,7 @@ function keyDownHandler(e) {
             else                                                    //the "q" key, aim (<-)
                 Baloon.aimWeaponLeft(PALLONI, turn);
             aiming = true;
+            Baloon.announceWeapon(PALLONI, turn);
         }
 
         if(e.keyCode == 32 && !alreadyShot) {                       //"spacebar" key, shoot
@@ -272,6 +275,7 @@ function drawCursorIndicator(relativeX, relativeY){
 
 //timer
 function updateGameState(){
+    document.getElementById("announcer").innerHTML="Tocca a Baloon#" + turn + "!";
     deadBaloon = false;
     stopMoving = false;
     forceExplosion = false;
@@ -319,7 +323,7 @@ function updateGameState(){
             if(ended)
                 document.getElementById("timer").innerHTML = "Thanks for playing!";
             else
-               document.getElementById("timer").innerHTML = "End Turn";
+                document.getElementById("timer").innerHTML = "End Turn";
         }
         if(projectiles[0] != null) {
             if(projectiles[0].dx == 0 && projectiles[0].dy == 0) {
