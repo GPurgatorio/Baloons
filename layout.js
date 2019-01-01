@@ -18,7 +18,8 @@ function hideButtons() {
     editing = false;
     adding = false;
     removing = false;
-    document.getElementById("tooltip").innerHTML="";
+    
+    document.getElementById("tooltip").classList.add('hidden');
     
     var buttons = document.getElementsByClassName('setup-button');
     for (var i = 0; i < buttons.length; i++) {

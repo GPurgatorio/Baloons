@@ -21,7 +21,7 @@ body {
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   opacity: 1;
-  transition: background-color 0.2s, transform 0.3s, height 0.2s, padding 0.2s, min-width 0.2s, font-size 0.2s;
+  transition: background-color 0.2s, transform 0.3s, height 0.2s, padding 0.2s, min-width 0.2s, font-size 0.2s, width 0.2s;
 }
 .button.big {
   width: 200px;
@@ -37,11 +37,12 @@ body {
 .button.red {
   background: #ec644b;
 }
-.button.hidden {
+.setup-button.hidden {
   height: 0;
   padding: 0;
   font-size: 0;
   min-width: 0;
+  width: 0;
 }
 .button.modal-button {
   width: 200px;
@@ -57,7 +58,7 @@ body {
   justify-content: space-around;
 }
 .tooltip {
-  background: #fff;
+  background: #B0B0B0;
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   padding: 8px;
@@ -68,14 +69,17 @@ body {
   align-content: center;
   margin-top: 150px;
 }
+.tooltip.hidden {
+  display: none;
+}
 .setup-button {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 .setup-button.add {
   background-image: url(images/plus.svg);
@@ -226,4 +230,13 @@ body {
   width: 100%;
   height: 100%;
   overflow-y: auto;
+}
+
+.margin{
+ margin-top: 30px;
+}
+
+#settingScreen {
+  width: 150px;
+  height: 150px;
 }
