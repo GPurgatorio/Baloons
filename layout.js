@@ -18,8 +18,9 @@ function hideButtons() {
     editing = false;
     adding = false;
     removing = false;
+    document.getElementById("tooltip").innerHTML="";
     
-    var buttons = document.getElementsByClassName('setup');
+    var buttons = document.getElementsByClassName('setup-button');
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].classList.add('hidden');
     }
@@ -29,6 +30,7 @@ function hideButtons() {
 function addBaloons(){
     document.getElementById('adding').classList.add('red');
     document.getElementById('editing').classList.remove('red');
+    document.getElementById("tooltip").innerHTML="Clicka nel cielo per aggiungere un Baloon.";
     document.body.style.cursor = 'default';
     adding = true;
     editing = false;
@@ -38,6 +40,7 @@ function addBaloons(){
 function editTerrain(){
     document.getElementById('editing').classList.add('red');
     document.getElementById('adding').classList.remove('red');
+    document.getElementById("tooltip").innerHTML="Sposta il mouse sul terreno che desideri modificare.";
     adding = false;
     editing = true;
     removing = !removing;
@@ -48,6 +51,7 @@ function restartSetup(){
     document.body.style.cursor = 'default';
     document.getElementById('editing').classList.remove('red');
     document.getElementById('adding').classList.remove('red');
+    document.getElementById("tooltip").innerHTML="Mappa rigenerata e tutte le impostazioni azzerate.";
     adding = false;
     editing = false;
     removing = false;
@@ -69,4 +73,12 @@ function unslideResume(){
     menu = false;
     unslidePause();
     document.getElementById('modal-overlay').classList.remove('shown');
+}
+
+function openSettings() {
+    document.getElementById('settingScreen').classList.add('shown');
+}
+
+function closeSettings() {
+    document.getElementById('settingScreen').classList.remove('shown');
 }

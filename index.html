@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <title>Baloons</title>
-	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.5.0/css/all.css' integrity='sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU' crossorigin='anonymous'>
+	<!--<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.5.0/css/all.css' integrity='sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU' crossorigin='anonymous'>-->
     <link rel='stylesheet' href='style.css'>
 </head>
 <body> 
-    <div class="modal-overlay" id="modal-overlay" onclick="closeInfos(); unslidePause()"></div>
+    <div class="modal-overlay" id="modal-overlay" onClick="closeInfos(); unslidePause(); closeSettings()"></div>
     <div class="modal infos" id="infos">
         <div class="tutorial">
             <P ALIGN=Center>Ciao! <br /> </P>
@@ -66,8 +66,15 @@
     </div>
     <div class="modal pause vertical transparent" id="pause">
         <div class="button modal-button" id="return" onClick="unslideResume()">Ritorna alla partita</div>
-        <div class="button modal-button" id="settings">Impostazioni</div>
+        <div class="button modal-button" id="settings" onClick="openSettings()">Impostazioni</div>
         <div class="button modal-button" id="exit">Esci</div>
+    </div>
+    <div class="modal setting vertical" id="settingScreen">
+        <div>
+            <input type="checkbox" id="doubleBuffer" onChange="doubleBuffer=!doubleBuffer;">
+            <label for="doubleBuffer">DoubleBuffer</label>
+        </div>
+        <input type="checkbox">
     </div>
     
     <div class="container game" id="game">
@@ -84,10 +91,15 @@
                 <script src="gameLogic.js"> </script>
             </div>
             <div class="actions-box">
-                <div class="button setup" id="adding" onClick="addBaloons()">Aggiungi Baloons</div>
-                <div class="button setup" id="editing" onClick="editTerrain()">Elimina Terreno</div>
-                <div class="button setup" onClick="hideButtons()">Inizia Partita</div>
-                <div class="button setup" onClick="restartSetup()">Restart</div>
+                <div class="couple">
+                    <div class="setup-button add" id="adding" onClick="addBaloons()"></div>
+                    <div class="setup-button edit" id="editing" onClick="editTerrain()"></div>
+                </div>
+                <div class="couple">
+                    <div class="setup-button start" onClick="hideButtons()"></div>
+                    <div class="setup-button reset" onClick="restartSetup()"></div>
+                </div>
+                <div class="tooltip" id="tooltip">Seleziona uno dei pulsanti per maggiori info.</div>
             </div>
         </div>
     </div>

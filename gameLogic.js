@@ -234,8 +234,10 @@ function addBaloon(e) {
         //    Baloon.dragNdrop(PALLONI, e.clientX - canvas.offsetLeft);
         //}
         //altrimenti (SCRIVI ELSE GRZ)
-        if(adding && e.clientY < world[e.clientX - canvas.offsetLeft]) {
-            PALLONI.push(new Baloon(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, cnt));         //team
+        var relativeX = e.clientX - canvas.offsetLeft;
+        var relativeY = e.clientY - canvas.offsetTop;
+        if(adding && relativeY < world[relativeX]) {
+            PALLONI.push(new Baloon(relativeX, relativeY, cnt));         //team
             cnt++;
         }
     }

@@ -47,6 +47,61 @@ body {
   width: 200px;
 }
 
+.actions-box {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.couple {
+  display: flex;
+  justify-content: space-around;
+}
+.tooltip {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  width: 150px;
+  min-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 150px;
+}
+.setup-button {
+  width: 50px;
+  height: 50px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+.setup-button.add {
+  background-image: url(images/plus.svg);
+}
+.setup-button.edit {
+  background-image: url(images/edit.svg);
+}
+.setup-button.start {
+  background-image: url(images/play.svg);
+}
+.setup-button.reset {
+  background-image: url(images/refresh.svg);
+}
+.setup-button.add:hover {
+  background-image: url(images/plushover.svg);
+}
+.setup-button.edit:hover {
+  background-image: url(images/edithover.svg);
+}
+.setup-button.start:hover {
+  background-image: url(images/playhover.svg);
+}
+.setup-button.reset:hover {
+  background-image: url(images/refreshhover.svg);
+}
+
 .container {
   width: 100%;
   height: 100%;
@@ -71,10 +126,6 @@ body {
   flex-direction: column;
 }
 
-/*
-.game-box {
-}*/
-
 .content {
   display: flex; 
 }
@@ -87,6 +138,7 @@ body {
   background: #eee; 
   margin-right: 50px;
   transition: margin 0.2s;
+  border-radius: 50px;
 }
 
 .timer, .announcer {
@@ -166,7 +218,10 @@ body {
   display: flex;
   z-index: 5;
 }
-
+.modal.setting.shown {
+  display: flex;
+  z-index: 6;
+}
 .tutorial {
   width: 100%;
   height: 100%;
