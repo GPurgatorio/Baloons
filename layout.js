@@ -112,3 +112,11 @@ function openSettings() {
 function closeSettings() {
     document.getElementById('settingScreen').classList.remove('shown');
 }
+
+function end() {
+    ended = true;
+    gameStarted = false;
+    document.getElementById("announcer").innerHTML="";
+    document.getElementById("timer").innerHTML="Partita terminata";
+    unslideResume();
+}

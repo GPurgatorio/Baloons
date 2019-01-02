@@ -67,12 +67,12 @@
     <div class="modal pause vertical transparent" id="pause">
         <div class="button modal-button" id="return" onClick="unslideResume()">Ritorna alla partita</div>
         <div class="button modal-button" id="settings" onClick="openSettings()">Impostazioni</div>
-        <div class="button modal-button" id="exit">Esci</div>
+        <div class="button modal-button" id="exit" onClick="end()">Termina partita</div>
     </div>
     <div class="modal setting vertical" id="settingScreen">
         <div>
             <input type="checkbox" id="doubleBuffer" onChange="doubleBuffer=!doubleBuffer;">
-            <label for="doubleBuffer">DoubleBuffer</label>
+            <label for="doubleBuffer">DoubleBuffer (Easter Egg del corso)</label>
         </div>
         <input type="checkbox">
     </div>

@@ -40,6 +40,7 @@ var turn = 0;
 var w;
 var relativeX;
 var relativeY;
+var explosionImg = new Image();
 
 //event listeners
 document.addEventListener("keyup", keyUpHandler, false);  
@@ -65,6 +66,8 @@ function setupVariables(){
     worldMap.slope = (Math.random() * worldMap.STEP_MAX) * 2 - worldMap.STEP_MAX;
     worldMap.createWorld(world);
     Baloon.WEAPON_NUMBER = 3;
+
+    explosionImg.src = 'images/explosion.png';
 }
 
 //what actually happens in the game 60 times/second
@@ -305,50 +308,52 @@ function updateGameState(){
     var countDown = 20000;
     var now = 0;
     var a = setInterval(function() {
-        var distance = countDown - now;
-        var seconds;
-        now += 1000;
+        if(!ended) {
+            var distance = countDown - now;
+            var seconds;
+            now += 1000;
 
-        if(distance >= 0)
-            seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        else
-            seconds = 0;
-
-        if(shooting == true) {
-            if(seconds > 4 && !alreadyDidThis) {
-                countDown = 4000;
-                now = 0;
-                seconds = 4;
-                alreadyDidThis = true;
-            }
-        }
-
-        //Shows seconds left for the turn
-        document.getElementById("timer").innerHTML = seconds + "s ";
-
-        if(distance <= 0)
-            stopMoving = true;
-
-        if (projectiles[0] == null && (distance <= 0 || deadBaloon || antiBugBoolean)) {
-            clearInterval(a);
-            set = false;
-            shooting = false;
-            sbadabum = 0;            
-
-            if(!deadBaloon)
-                turn = (turn + 1) % cnt;
-            if(ended)
-                document.getElementById("timer").innerHTML = "Thanks for playing!";
+            if(distance >= 0)
+                seconds = Math.floor((distance % (1000 * 60)) / 1000);
             else
-                document.getElementById("timer").innerHTML = "End Turn";
-        }
-        if(projectiles[0] != null) {
-            if(projectiles[0].dx == 0 && projectiles[0].dy == 0) {
-                console.log("tick..");
-                exploding++;
+                seconds = 0;
+
+            if(shooting == true) {
+                if(seconds > 4 && !alreadyDidThis) {
+                    countDown = 4000;
+                    now = 0;
+                    seconds = 4;
+                    alreadyDidThis = true;
+                }
             }
-            if(exploding >= 3)
-                forceExplosion = true;
+
+            //Shows seconds left for the turn
+            document.getElementById("timer").innerHTML = seconds + "s ";
+
+            if(distance <= 0)
+                stopMoving = true;
+
+            if (projectiles[0] == null && (distance <= 0 || deadBaloon || antiBugBoolean)) {
+                clearInterval(a);
+                set = false;
+                shooting = false;
+                sbadabum = 0;            
+
+                if(!deadBaloon)
+                    turn = (turn + 1) % cnt;
+                if(ended)
+                    document.getElementById("timer").innerHTML = "Thanks for playing!";
+                else
+                    document.getElementById("timer").innerHTML = "End Turn";
+            }
+            if(projectiles[0] != null) {
+                if(projectiles[0].dx == 0 && projectiles[0].dy == 0) {
+                    console.log("tick..");
+                    exploding++;
+                }
+                if(exploding >= 3)
+                    forceExplosion = true;
+            }
         }
     }, 1000);
 }

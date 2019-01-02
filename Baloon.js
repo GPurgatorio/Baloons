@@ -106,24 +106,26 @@ class Baloon {
 
     static movementTurn(array, p){
         let obj = array[p];
-        let relX = obj.x;
+        if(obj != null) {
+            let relX = obj.x;
 
-        let relY = obj.y;
+            let relY = obj.y;
 
-        if(relY >= world[relX] - obj.ballRadius && relY < world[relX]){
-            obj.jumping = false;
+            if(relY >= world[relX] - obj.ballRadius && relY < world[relX]){
+                obj.jumping = false;
+            }
+            if(obj.dy >= 0){
+                obj.goingUp = false;
+            }
+            if(obj.goingUp && obj.dy != 0){
+                obj.y += obj.dy;
+                obj.dy += 1;
+            }
+            if(obj.y < 10)
+                obj.y = 10;
+            if(obj.y > canvas.height)
+                obj.hp = 0;
         }
-        if(obj.dy >= 0){
-            obj.goingUp = false;
-        }
-        if(obj.goingUp && obj.dy != 0){
-            obj.y += obj.dy;
-            obj.dy += 1;
-        }
-        if(obj.y < 10)
-            obj.y = 10;
-        if(obj.y > canvas.height)
-            obj.hp = 0;
     }
 
     static updateBaloons(array) {
