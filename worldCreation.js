@@ -5,7 +5,7 @@ class worldMap {
     // creating the landscape
     static createWorld(world){
 
-        for (var n = 0; n < canvas.width; n++) {
+        for (var n = 0; n < canvas.width+2; n++) {
             // change height and slope
             worldMap.height += worldMap.slope;
             worldMap.slope += (Math.random() * worldMap.STEP_CHANGE) * 2 - worldMap.STEP_CHANGE;
@@ -124,19 +124,18 @@ class worldMap {
         }
     }
 
-    //no need anymore
-    /*static fixWorld(world){
+    static fixWorld(world){
         var n, i;
+        
         for(n = 0; n < 10; n++) {
-            for(i = 1;i<world.length - 1;i++){
+            for(i = 0; i < world.length - 1; i++){
                 if(world[i] < world[i+1] + 20 || world[i] > world[i+1] - 20) {
                     world[i] -= (world[i]-world[i+1])/2;
                 }
                 else if(world[i] < world[i-1] + 20 || world[i] > world[i-1] - 20) {
                     world[i] += (world[i]-world[i+1])/2;
                 }
-            }      
+            }
         }
-        world[i] += (world[i]-world[i-1]+1)/2;
-    }*/
+    }
 }

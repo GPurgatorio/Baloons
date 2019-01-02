@@ -52,22 +52,26 @@ body {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  background: url(images/actionbox.jpg) no-repeat center/cover;
+  border-radius: 30px;
 }
 .couple {
   display: flex;
   justify-content: space-around;
 }
 .tooltip {
-  background: #B0B0B0;
-  border-radius: 4px;
+  background: #F0FFFF;
+  border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   padding: 8px;
   width: 150px;
-  min-height: 30px;
+  min-height: 80px;
   display: flex;
   justify-content: center;
   align-content: center;
-  margin-top: 150px;
+  margin-top: 80px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 .tooltip.hidden {
   display: none;
@@ -93,6 +97,12 @@ body {
 .setup-button.reset {
   background-image: url(images/refresh.svg);
 }
+.setup-button.fix {
+  background-image: url(images/fix.svg);
+}
+.setup-button.color {
+  background-image: url(images/color.svg);
+}
 .setup-button.add:hover {
   background-image: url(images/plushover.svg);
 }
@@ -105,6 +115,13 @@ body {
 .setup-button.reset:hover {
   background-image: url(images/refreshhover.svg);
 }
+.setup-button.fix:hover {
+  background-image: url(images/fixhover.svg);
+}
+.setup-button.color:hover {
+  background-image: url(images/colorhover.svg);
+}
+
 
 .container {
   width: 100%;
@@ -124,6 +141,7 @@ body {
 .container.game.shown {
   bottom: 0;
   opacity: 1;
+  background: url(images/pattern.jpg) no-repeat center/cover;
 }
 .container.splash {
   background: url(images/splash.jpeg) no-repeat center/cover;

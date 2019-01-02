@@ -38,6 +38,8 @@ var cnt = 0;
 var team = 0;
 var turn = 0;
 var w;
+var relativeX;
+var relativeY;
 
 //event listeners
 document.addEventListener("keyup", keyUpHandler, false);  
@@ -84,7 +86,7 @@ function gameLoop(){
             winnable = true;
 
         if(!ended && winnable && cnt == 1) {
-            //vai ad un menù di riepilogo, fine della partita
+            //TO DO: vai ad un menù di riepilogo, fine della partita
             alert("Fine!");
             ended = true;
         }
@@ -132,12 +134,13 @@ function gameLoop(){
                 //if projectile shot goes beyond the canvas in some direction (not topside)
                 if(projectiles[0].x < 0 || projectiles[0].x > canvas.width || projectiles[0].y > canvas.height)
                     projectiles.splice(0,1);
-                //if projectile shot hits the ground || stucked at some point, forcing explosion..
+                
                 else if(projectiles[0].weapon == 1) {
                     if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 1]) {
                         projectileRIP = true;
                     }
                 }
+                //if stucked at some point, forcing explosion || projectile shot hits the ground
                 else if(forceExplosion || (Math.floor(projectiles[0].y) > world[Math.floor(projectiles[0].x)])) {
                     if(projectiles[0].weapon == 0) {
                         projectileRIP = true;
@@ -207,9 +210,7 @@ function keyDownHandler(e) {
     }
 
     if(e.keyCode == 191) {                                          //debug purpose, "ù" 
-        console.log("Flattening..");
-        for(var n = 0; n < world.length; n++)
-            world[n]=400;
+        ;
     }
 }
 
@@ -234,8 +235,8 @@ function addBaloon(e) {
         //    Baloon.dragNdrop(PALLONI, e.clientX - canvas.offsetLeft);
         //}
         //altrimenti (SCRIVI ELSE GRZ)
-        var relativeX = e.clientX - canvas.offsetLeft;
-        var relativeY = e.clientY - canvas.offsetTop;
+        relativeX = e.clientX - canvas.offsetLeft;
+        relativeY = e.clientY - canvas.offsetTop;
         if(adding && relativeY < world[relativeX]) {
             PALLONI.push(new Baloon(relativeX, relativeY, cnt));         //team
             cnt++;
@@ -244,15 +245,13 @@ function addBaloon(e) {
 }
 
 function mouseMoveHandler(e) {
-    var relativeX = e.clientX - canvas.offsetLeft;
-    var relativeY = e.clientY - canvas.offsetTop;
+    relativeX = e.clientX - canvas.offsetLeft;
+    relativeY = e.clientY - canvas.offsetTop;
     if(editing) {
-        drawCursorIndicator(relativeX, relativeY);
+        drawCursorIndicator();
         if(relativeX < canvas.width && dragging && (relativeY < world[relativeX] + 20 && (relativeY > world[relativeX]))) {
             if(removing)
                 worldMap.removeWorldPart(world, relativeX, relativeY);
-            //else 
-            //    worldMap.addWorldPart(world, relativeX, relativeY);
         }
     }
     if(adding) {
@@ -264,7 +263,7 @@ function mouseMoveHandler(e) {
     }
 }
 
-function drawCursorIndicator(relativeX, relativeY){
+function drawCursorIndicator(){
     ctx.beginPath();
     ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
     if(!dragging)
@@ -273,6 +272,22 @@ function drawCursorIndicator(relativeX, relativeY){
         ctx.fillStyle = "#FF0000";
     ctx.fill();
     ctx.closePath();
+}
+
+function checkMap(world) {
+
+    for(var i=0; i<world.length -1; i++) {
+        if(world[i] > world[i+1] + 13 || world[i] < world[i+1] - 13) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function fixWorld() {
+    worldMap.fixWorld(world);
+    document.getElementById("tooltip").innerHTML="Rende il terreno meno seghettato.";
 }
 
 //timer
@@ -287,7 +302,7 @@ function updateGameState(){
     exploding = 0;
     antiBugBoolean = false;
     var alreadyDidThis = false;
-    var countDown = 15000;
+    var countDown = 20000;
     var now = 0;
     var a = setInterval(function() {
         var distance = countDown - now;
