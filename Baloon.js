@@ -53,15 +53,8 @@ class Baloon {
             }
             else                                    //no collisioni
                 obj.x += 2; 
-            /*else if(!worldMap.isOccupied(PALLONI, obj.x, p)) {
-                obj.x += 2;
-                console.log("Not occupied (R)");
-            }
-            if(worldMap.isOccupied(PALLONI, obj.x, p)){
-                console.log("Sovrapposizione");
-                obj.y = world[obj.x] - obj.ballRadius * 2;
-            }
-            else */if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius){
+            
+            if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius){
                 if(obj.y > world[obj.x] - obj.ballRadius*2)
                     obj.y = world[obj.x] - obj.ballRadius;
             }
@@ -133,8 +126,6 @@ class Baloon {
             var obj = array[i];
             
             if(obj.hp <= 0) {
-                //TODO: death animation
-                //TODO: call a function that sets myTurn of every Baloon # > i . Ballon.myTurn = array[pos]
                 array.splice(i,1);
             }
             //gravity
@@ -219,7 +210,6 @@ class Baloon {
         ctx.stroke();
         ctx.closePath();
 
-        //point of where you're actually aiming     (ctx.fillRect(10,10,1,1);   fill in the pixel at (10,10))
         //x = cx + r * cos(a) && y = cy + r * sin(a)
         //var angle = Math.atan2(obj.aimY - obj.y, obj.aimX - obj.x);       
 

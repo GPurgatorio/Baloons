@@ -13,25 +13,30 @@ function closeInfos() {
 }
 
 function hideButtons() {
-    document.body.style.cursor = 'default';
-    gameStarted = true;
-    editing = false;
-    adding = false;
-    removing = false;
-    
-    document.getElementById("tooltip").classList.add('hidden');
-    
-    var buttons = document.getElementsByClassName('setup-button');
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.add('hidden');
+    if(PALLONI.length > 0) {
+        document.body.style.cursor = 'default';
+        gameStarted = true;
+        editing = false;
+        adding = false;
+        removing = false;
+        
+        document.getElementById("tooltip").classList.add('hidden');
+        
+        var buttons = document.getElementsByClassName('setup-button');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].classList.add('hidden');
+        }
+        document.getElementById('canvas').style.marginRight = 0;
     }
-    document.getElementById('canvas').style.marginRight = 0;
+    else {
+        document.getElementById('tooltip').innerHTML="Questo tasto inizia la partita. Non credo tu voglia far iniziare una partita senza giocatori.."
+    }
 }
 
 function addBaloons(){
     document.getElementById('adding').classList.add('red');
     document.getElementById('editing').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Clicka nel cielo per aggiungere un Baloon.";
+    document.getElementById("tooltip").innerHTML="Questo tasto permette l'aggiunta di Baloons. Clicka nel cielo per aggiungere un Baloon.";
     document.body.style.cursor = 'default';
     adding = true;
     editing = false;
@@ -42,18 +47,18 @@ function lastRandomColor() {
     var last = PALLONI.length -1;
 
     if(last >= 0) {
-        document.getElementById("tooltip").innerHTML="Cambia randomicamente il colore dell'ultimo Baloon.";
+        document.getElementById("tooltip").innerHTML="Questo tasto permette di cambiare randomicamente il colore dell'ultimo Baloon inserito.";
         PALLONI[last].color = Baloon.getRandomColor();
     }
     else {
-        document.getElementById("tooltip").innerHTML="Questo pulsante serve a cambiare il colore di un Baloon. Prima creane uno!";
+        document.getElementById("tooltip").innerHTML="Questo tasto permette di cambiare il colore di un Baloon. Prima però creane uno!";
     }
 }
 
 function editTerrain(){
     document.getElementById('editing').classList.add('red');
     document.getElementById('adding').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Sposta il mouse sul terreno che desideri modificare.";
+    document.getElementById("tooltip").innerHTML="Questo tasto permette la modifica manuale del terreno. Sposta il mouse sul terreno per cancellarlo.";
     adding = false;
     editing = true;
     removing = true;
@@ -61,7 +66,7 @@ function editTerrain(){
 }
 
 function fixTerrain(){
-    document.getElementById("tooltip").innerHTML="Hai appena smussato un po' il terreno.";
+    document.getElementById("tooltip").innerHTML="Questo tasto controlla la consistenza del terreno. Hai appena smussato un po' il terreno.";
     var check = checkMap(world);
     if(check) {
         worldMap.fixWorld(world);
@@ -73,7 +78,7 @@ function fixTerrain(){
         }
     }
     else {
-        document.getElementById("tooltip").innerHTML="Il terreno risulta coerente, nulla da smussare.";
+        document.getElementById("tooltip").innerHTML="Questo tasto controlla la consistenza del terreno. Il terreno risulta coerente, nulla da smussare.";
     }
 }
 
@@ -81,7 +86,7 @@ function restartSetup(){
     document.body.style.cursor = 'default';
     document.getElementById('editing').classList.remove('red');
     document.getElementById('adding').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Mappa rigenerata e tutte le azioni azzerate.";
+    document.getElementById("tooltip").innerHTML="Questo tasto permette di resettare ogni azione precedente. Mappa rigenerata e tutte le azioni azzerate.";
     adding = false;
     editing = false;
     removing = false;

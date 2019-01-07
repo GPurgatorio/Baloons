@@ -89,7 +89,6 @@ function gameLoop(){
             winnable = true;
 
         if(!ended && winnable && cnt == 1) {
-            //TO DO: vai ad un menù di riepilogo, fine della partita
             alert("Fine!");
             ended = true;
         }
@@ -99,7 +98,7 @@ function gameLoop(){
             updateGameState();
         }
 
-        if(deadBaloon && turn == cnt) {                     //maybe ?
+        if(deadBaloon && turn == cnt) {                    
             antiBugBoolean = true;
             turn = 0;
         }
@@ -139,8 +138,15 @@ function gameLoop(){
                     projectiles.splice(0,1);
                 
                 else if(projectiles[0].weapon == 1) {
-                    if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 1]) {
-                        projectileRIP = true;
+                    if(projectiles[0].dx < 0) {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 1]) {
+                            projectileRIP = true;
+                        }
+                    }
+                    else {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) + 1]) {
+                            projectileRIP = true;
+                        }
                     }
                 }
                 //if stucked at some point, forcing explosion || projectile shot hits the ground
@@ -233,15 +239,10 @@ function mouseClickHandler(e){
 
 function addBaloon(e) {
     if(!editing && !gameStarted) {
-        //se ho preso un pallone..
-        //if(worldMap.isOccupied(world, e.clientX - canvas.offSetLeft)) {     //check H
-        //    Baloon.dragNdrop(PALLONI, e.clientX - canvas.offsetLeft);
-        //}
-        //altrimenti (SCRIVI ELSE GRZ)
         relativeX = e.clientX - canvas.offsetLeft;
         relativeY = e.clientY - canvas.offsetTop;
         if(adding && relativeY < world[relativeX]) {
-            PALLONI.push(new Baloon(relativeX, relativeY, cnt));         //team
+            PALLONI.push(new Baloon(relativeX, relativeY, cnt));       
             cnt++;
         }
     }
@@ -348,7 +349,6 @@ function updateGameState(){
             }
             if(projectiles[0] != null) {
                 if(projectiles[0].dx == 0 && projectiles[0].dy == 0) {
-                    console.log("tick..");
                     exploding++;
                 }
                 if(exploding >= 3)

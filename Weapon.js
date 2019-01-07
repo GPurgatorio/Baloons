@@ -23,12 +23,12 @@ class Weapon {
         ctx.closePath();
     }
 
-    static shootRect(array) {      //power 
+    static shootRect(array) {           //power 
         var obj = array[0];             //per ora non più di un proiettile per volta
         ctx.fillStyle = "#000000";
-        obj.x += obj.dx/5;
+        obj.x += obj.dx/4;
+        obj.y += obj.dy/4;
         obj.dy += 0.5;
-        obj.y += obj.dy;
         ctx.beginPath();
         ctx.fillRect(obj.x, obj.y, 10, 10);
         ctx.closePath();
@@ -81,11 +81,15 @@ class Weapon {
         var minute = now.getMinutes();
         var second = now.getSeconds();
         hour = hour%12;
-        hour = (hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60)) - 1.8;
-        //minute
-        minute = (minute*Math.PI/30)+(second*Math.PI/(30*60)) - 1.5;
-        // second
-        second = (second*Math.PI/30) - 1.4;
+        hour = (hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60));
+        
+        minute = (minute*Math.PI/30)+(second*Math.PI/(30*60));
+        
+        second = (second*Math.PI/30);
+
+        hour += Math.PI/2;
+        minute += Math.PI/2;
+        second += Math.PI/2;
 
         //body
         ctx.beginPath();
