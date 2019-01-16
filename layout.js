@@ -141,7 +141,6 @@ function end() {
 function infoAdd() {
     if(!adding) {
         frase = document.getElementById("tooltip").innerHTML;
-        console.log(frase);
         document.getElementById("tooltip").innerHTML="Questo pulsante permette di aggiungere Baloons.";
     }
 }

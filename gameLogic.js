@@ -127,6 +127,9 @@ function gameLoop(){
                     Baloon.drawAim(PALLONI, turn);
             }
 
+            if(sbadabum > 0)
+                Weapon.drawIntensity(sbadabum, PALLONI, turn); 
+
             if(projectiles.length != 0) {                           
                 alreadyShot = true;
                 if(projectiles[0].weapon == 0)
@@ -171,13 +174,12 @@ function gameLoop(){
 
                 if(projectileRIP) {
                     var pCoordX = projectiles[0].x - 20;
-                    var pCoordY = projectiles[0].y;
                     ctx.beginPath();
-                    ctx.drawImage(explosionImg, pCoordX, pCoordY, 75, 75);
+                    ctx.drawImage(explosionImg, pCoordX, projectiles[0].y, 75, 75);
                     ctx.closePath();
-                    Baloon.hitBaloons(PALLONI, pCoordX, projectiles[0].weapon);
+                    Baloon.hitBaloons(PALLONI, projectiles[0].x, projectiles[0].weapon);
                     if(!indestructibleTerrain)
-                        worldMap.terrainHit(world, pCoordX, pCoordY, projectiles[0].weapon);
+                        worldMap.terrainHit(world, projectiles[0].x, projectiles[0].y, projectiles[0].weapon);
                     projectiles.splice(0,1);
                 }
             }
@@ -223,7 +225,6 @@ function keyDownHandler(e) {
                 sbadabum++;
             shooting = true;
             stopMoving = true;
-            Weapon.drawIntensity(sbadabum, PALLONI, turn);
         }
             
         if(e.keyCode == 187)                                        //the "+" key, change weapon (->)
@@ -252,6 +253,7 @@ function keyUpHandler(e) {
                 w.x += PALLONI[turn].aimX/10;
             projectiles.push(w);
             stopMoving = false;
+            sbadabum = 0;
         }
     }
 }
