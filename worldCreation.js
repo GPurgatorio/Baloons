@@ -106,23 +106,14 @@ class worldMap {
 
     static terrainHit(world, coordX, coordY, weaponType) {
 
-        var x, d, a, explosionR, size; 
-        if(weaponType == 0) {
+        var x, d, a, explosionR;
+        if(weaponType == 0)
             explosionR = 25;
-            size = 50;
-        }
-        else if (weaponType == 1){
+        else if (weaponType == 1)
             explosionR = 35;
-            size = 70;
-        }
-        else if(weaponType == 2){
+        else if(weaponType == 2)
             explosionR = 50;
-            size = 100;
-        }
 
-        ctx.beginPath();
-        ctx.drawImage(explosionImg, coordX, coordY, size, size);
-        ctx.closePath();
 
         if(coordX < explosionR)
             x = coordX;

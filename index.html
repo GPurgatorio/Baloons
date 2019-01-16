@@ -71,10 +71,20 @@
     </div>
     <div class="modal setting vertical" id="settingScreen">
         <div>
-            <input type="checkbox" id="doubleBuffer" onChange="doubleBuffer=!doubleBuffer;">
-            <label for="doubleBuffer">DoubleBuffer (Easter Egg del corso)</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="doubleBuffer" onChange="doubleBuffer=!doubleBuffer;">
+                <label for="doubleBuffer">DoubleBuffer (Easter Egg del corso)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="undestructibleTerrain" onChange="indestructibleTerrain=!indestructibleTerrain">
+                <label for="undestructibleTerrain">Terreno Indistruttibile</label>
+            </div>
+
+            <div class="slider-container">
+                <input type="range" min="1" max="5" class="slider" id="slider" onInput="updateSliderValue()">
+                <p class="slider-label">Weapon Sensibility: <span id="slider-value"></span></p>
+            </div>
         </div>
-        <input type="checkbox">
     </div>
     
     <div class="container game" id="game">
@@ -93,16 +103,16 @@
 
             <div class="actions-box">
                 <div class="couple margin">
-                    <div class="setup-button add" id="adding" onClick="addBaloons()"></div>
-                    <div class="setup-button color" onClick="lastRandomColor()"></div>
+                    <div class="setup-button add" id="adding" onClick="addBaloons()" onMouseOver="infoAdd()" onMouseOut="restoreTooltipAdd()"></div>
+                    <div class="setup-button color" onClick="lastRandomColor()" onMouseOver="infoColor()" onMouseOut="restoreTooltip()"></div>
                 </div>
                 <div class="couple">
-                    <div class="setup-button edit" id="editing" onClick="editTerrain()"></div>
-                    <div class="setup-button fix" onClick="fixTerrain()"></div>
+                    <div class="setup-button edit" id="editing" onClick="editTerrain()" onMouseOver="infoEdit()" onMouseOut="restoreTooltipEdit()"></div>
+                    <div class="setup-button fix" onClick="fixTerrain()" onMouseOver="infoFix()" onMouseOut="restoreTooltip()"></div>
                 </div>
                 <div class="couple">
-                    <div class="setup-button start" onClick="hideButtons()"></div>
-                    <div class="setup-button reset" onClick="restartSetup()"></div>
+                    <div class="setup-button start" onClick="hideButtons()" onMouseOver="infoStart()" onMouseOut="restoreTooltip()"></div>
+                    <div class="setup-button reset" onClick="restartSetup()" onMouseOver="infoReset()" onMouseOut="restoreTooltip()"></div>
                 </div>
                 <div class="tooltip" id="tooltip">Seleziona uno dei pulsanti per maggiori info.</div>
             </div>

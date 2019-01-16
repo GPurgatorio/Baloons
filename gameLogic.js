@@ -6,6 +6,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var menu = false;
 var world = [];
+var frase = "Seleziona uno dei pulsanti per maggiori info."
 
 //gameLogic settings
 var adding = false;
@@ -25,7 +26,8 @@ var projectileRIP = false;
 var stopMoving = false;
 var deadBaloon = false;
 var doubleBufferCnt = 0;
-var doubleBuffer = true;
+var doubleBuffer = false;
+var indestructibleTerrain = false;
 var forceExplosion = false;
 var sbadabum = 0;
 var exploding = 0;
@@ -36,6 +38,7 @@ var projectiles = [];
 var cnt = 0;
 var team = 0;
 var turn = 0;
+var ballSensitivity = 3;
 var w;
 var relativeX;
 var relativeY;
@@ -67,6 +70,9 @@ function setupVariables(){
     Baloon.WEAPON_NUMBER = 3;
 
     explosionImg.src = 'images/explosion.png';
+    
+    document.getElementById("slider").value = ballSensitivity;
+    updateSliderValue();
 }
 
 //what actually happens in the game 60 times/second
@@ -130,7 +136,7 @@ function gameLoop(){
                     Weapon.shootBall(projectiles, world);
             
                 else if (projectiles[0].weapon == 2) {
-                    if(doubleBufferCnt < 15 || (doubleBufferCnt > 31 && doubleBufferCnt < 45) || doubleBuffer)
+                    if(doubleBufferCnt < 45 || doubleBuffer)
                         Weapon.shootAnalogClock(projectiles);
                     else if(doubleBufferCnt >= 60)
                         doubleBufferCnt = 0;
@@ -143,12 +149,12 @@ function gameLoop(){
                 
                 else if(projectiles[0].weapon == 1) {
                     if(projectiles[0].dx < 0) {
-                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 3]) {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - ballSensitivity]) {
                             projectileRIP = true;
                         }
                     }
                     else {
-                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) + 3]) {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) + ballSensitivity]) {
                             projectileRIP = true;
                         }
                     }
@@ -164,8 +170,14 @@ function gameLoop(){
                 }
 
                 if(projectileRIP) {
-                    Baloon.hitBaloons(PALLONI, projectiles[0].x, projectiles[0].weapon);
-                    worldMap.terrainHit(world, projectiles[0].x, projectiles[0].y, projectiles[0].weapon);
+                    var pCoordX = projectiles[0].x - 20;
+                    var pCoordY = projectiles[0].y;
+                    ctx.beginPath();
+                    ctx.drawImage(explosionImg, pCoordX, pCoordY, 75, 75);
+                    ctx.closePath();
+                    Baloon.hitBaloons(PALLONI, pCoordX, projectiles[0].weapon);
+                    if(!indestructibleTerrain)
+                        worldMap.terrainHit(world, pCoordX, pCoordY, projectiles[0].weapon);
                     projectiles.splice(0,1);
                 }
             }
@@ -176,37 +188,41 @@ function gameLoop(){
 
 function keyDownHandler(e) {
    
-    if(gameStarted && !stopMoving) {                  
-        if(e.keyCode == 37) {                                      //classic keys movement
-            Baloon.moveLeft(PALLONI,turn);
-            aiming = false;
-        }
-        if(e.keyCode == 39) {
-            Baloon.moveRight(PALLONI,turn);
-            aiming = false;
-        }
-        if(e.keyCode == 40) {
-            Baloon.moveDown(PALLONI,turn);
-            aiming = false;
-        }
-        if(e.keyCode == 38) {
-            Baloon.moveUp(PALLONI,turn);
-            aiming = false;
+    if(gameStarted) {
+        
+        if(!stopMoving) {                  
+            if(e.keyCode == 37) {                                      //classic keys movement
+                Baloon.moveLeft(PALLONI,turn);
+                aiming = false;
+            }
+            if(e.keyCode == 39) {
+                Baloon.moveRight(PALLONI,turn);
+                aiming = false;
+            }
+            if(e.keyCode == 40) {
+                Baloon.moveDown(PALLONI,turn);
+                aiming = false;
+            }
+            if(e.keyCode == 38) {
+                Baloon.moveUp(PALLONI,turn);
+                aiming = false;
+            }
+        
+            if(e.keyCode == 69 || e.keyCode == 81) {
+                if (e.keyCode == 69)                                    //the "e" key, aim (->)
+                    Baloon.aimWeaponRight(PALLONI, turn);
+                else                                                    //the "q" key, aim (<-)
+                    Baloon.aimWeaponLeft(PALLONI, turn);
+                aiming = true;
+                Baloon.announceWeapon(PALLONI, turn);
+            }
         }
 
-        if(e.keyCode == 69 || e.keyCode == 81) {
-            if (e.keyCode == 69)                                    //the "e" key, aim (->)
-                Baloon.aimWeaponRight(PALLONI, turn);
-            else                                                    //the "q" key, aim (<-)
-                Baloon.aimWeaponLeft(PALLONI, turn);
-            aiming = true;
-            Baloon.announceWeapon(PALLONI, turn);
-        }
-
-        if(e.keyCode == 32 && !alreadyShot) {                       //"spacebar" key, shoot
+        if(e.keyCode == 32 && !alreadyShot && aiming) {                       //"spacebar" key, shoot
             if(sbadabum < 10)
                 sbadabum++;
             shooting = true;
+            stopMoving = true;
             Weapon.drawIntensity(sbadabum, PALLONI, turn);
         }
             
@@ -215,26 +231,27 @@ function keyDownHandler(e) {
         if(e.keyCode == 189)                                        //the "-" key, change weapon (<-)
             Baloon.weaponSwitchBackward(PALLONI, turn);
 
-        if(e.keyCode == 27) {                                        //the "esc" key, menù maybe?
-            menu = !menu;
+        if(e.keyCode == 27) {                                        //the "esc" key, menù
+            menu = true;
             if(menu)
                 slidePause();
         }
     }
 
     if(e.keyCode == 191) {                                          //debug purpose, "ù" 
-        //insert debug
+        //insert foo to debug here
         ;
     }
 }
 
 function keyUpHandler(e) {
     if(gameStarted && PALLONI.length != 0 && !alreadyShot) {
-        if(e.keyCode == 32) {
+        if(e.keyCode == 32 && aiming) {
             w = new Weapon(PALLONI[turn].x, PALLONI[turn].y, PALLONI[turn].aimX, PALLONI[turn].aimY, sbadabum, PALLONI[turn].weapon)
             if(PALLONI[turn].weapon == 1)   //sfera
                 w.x += PALLONI[turn].aimX/10;
             projectiles.push(w);
+            stopMoving = false;
         }
     }
 }
@@ -316,7 +333,8 @@ function updateGameState(){
     var countDown = 20000;
     var now = 0;
     var a = setInterval(function() {
-        if(!ended) {
+        if(!menu && !ended) {
+            
             var distance = countDown - now;
             var seconds;
             now += 1000;
@@ -338,7 +356,7 @@ function updateGameState(){
             //Shows seconds left for the turn
             document.getElementById("timer").innerHTML = seconds + "s ";
 
-            if(distance <= 0)
+            if(distance <= 0) 
                 stopMoving = true;
 
             if (projectiles[0] == null && (distance <= 0 || deadBaloon || antiBugBoolean)) {

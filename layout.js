@@ -29,14 +29,14 @@ function hideButtons() {
         document.getElementById('canvas').style.marginRight = 0;
     }
     else {
-        document.getElementById('tooltip').innerHTML="Questo tasto inizia la partita. Non credo tu voglia far iniziare una partita senza giocatori.."
+        document.getElementById('tooltip').innerHTML="Non credo tu voglia far iniziare una partita senza giocatori.."
     }
 }
 
 function addBaloons(){
     document.getElementById('adding').classList.add('red');
     document.getElementById('editing').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Questo tasto permette l'aggiunta di Baloons. Clicka nel cielo per aggiungere un Baloon.";
+    document.getElementById("tooltip").innerHTML="Clicka nel cielo per aggiungere Baloons!";
     document.body.style.cursor = 'default';
     adding = true;
     editing = false;
@@ -47,18 +47,21 @@ function lastRandomColor() {
     var last = PALLONI.length -1;
 
     if(last >= 0) {
-        document.getElementById("tooltip").innerHTML="Questo tasto permette di cambiare randomicamente il colore dell'ultimo Baloon inserito.";
+        document.getElementById("tooltip").innerHTML="Colore dell'ultimo Baloon cambiato!";
         PALLONI[last].color = Baloon.getRandomColor();
     }
     else {
-        document.getElementById("tooltip").innerHTML="Questo tasto permette di cambiare il colore di un Baloon. Prima però creane uno!";
+        document.getElementById("tooltip").innerHTML="Per cambiare il colore di un Baloon però prima creane uno!";
     }
 }
 
 function editTerrain(){
     document.getElementById('editing').classList.add('red');
     document.getElementById('adding').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Questo tasto permette la modifica manuale del terreno. Sposta il mouse sul terreno per cancellarlo.";
+    if(removing)
+        document.getElementById("tooltip").innerHTML="Modalità: Modifica. Sposta il mouse sul terreno per modificarlo.";
+    else
+        document.getElementById("tooltip").innerHTML="Modalità: Mostra. Clicka per passare a modalità Modifica.";
     adding = false;
     editing = true;
     removing = true;
@@ -66,7 +69,7 @@ function editTerrain(){
 }
 
 function fixTerrain(){
-    document.getElementById("tooltip").innerHTML="Questo tasto controlla la consistenza del terreno. Hai appena smussato un po' il terreno.";
+    document.getElementById("tooltip").innerHTML="Hai appena smussato un po' il terreno!";
     var check = checkMap(world);
     if(check) {
         worldMap.fixWorld(world);
@@ -78,7 +81,7 @@ function fixTerrain(){
         }
     }
     else {
-        document.getElementById("tooltip").innerHTML="Questo tasto controlla la consistenza del terreno. Il terreno risulta coerente, nulla da smussare.";
+        document.getElementById("tooltip").innerHTML="Il terreno risulta coerente, nulla da smussare.";
     }
 }
 
@@ -86,13 +89,14 @@ function restartSetup(){
     document.body.style.cursor = 'default';
     document.getElementById('editing').classList.remove('red');
     document.getElementById('adding').classList.remove('red');
-    document.getElementById("tooltip").innerHTML="Questo tasto permette di resettare ogni azione precedente. Mappa rigenerata e tutte le azioni azzerate.";
+    document.getElementById("tooltip").innerHTML="Mappa rigenerata e tutte le azioni azzerate!";
     adding = false;
     editing = false;
     removing = false;
     while(PALLONI.length != 0)
         PALLONI.splice(0,1);
     worldMap.createWorld(world);
+    frase = "Seleziona uno dei pulsanti per maggiori info."
 }
 
 function slidePause() {
@@ -116,6 +120,14 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById('settingScreen').classList.remove('shown');
+    unslideResume();
+}
+
+function updateSliderValue() {
+    var slider = document.getElementById("slider");
+    var valueBox = document.getElementById("slider-value");
+    valueBox.innerHTML = slider.value;
+    ballSensitivity = parseInt(slider.value);
 }
 
 function end() {
@@ -124,4 +136,53 @@ function end() {
     document.getElementById("announcer").innerHTML="";
     document.getElementById("timer").innerHTML="Partita terminata";
     unslideResume();
+}
+
+function infoAdd() {
+    if(!adding) {
+        frase = document.getElementById("tooltip").innerHTML;
+        console.log(frase);
+        document.getElementById("tooltip").innerHTML="Questo pulsante permette di aggiungere Baloons.";
+    }
+}
+
+function infoColor() {
+    frase = document.getElementById("tooltip").innerHTML;
+    document.getElementById("tooltip").innerHTML="Questo pulsante permette di cambiare randomicamente il colore dell'ultimo Baloon aggiunto.";
+}
+
+function infoEdit() {
+    if(!editing) {
+        frase = document.getElementById("tooltip").innerHTML;
+        document.getElementById("tooltip").innerHTML="Questo pulsante permette di modificare manualmente il terreno.";
+    }
+}
+
+function infoFix() {
+    frase = document.getElementById("tooltip").innerHTML;
+    document.getElementById("tooltip").innerHTML="Questo pulsante permette di aggiustare automaticamente il terreno.";
+}
+
+function infoStart() {
+    frase = document.getElementById("tooltip").innerHTML;
+    document.getElementById("tooltip").innerHTML="Questo pulsante permette di iniziare la partita.";
+}
+
+function infoReset() {
+    frase = document.getElementById("tooltip").innerHTML;
+    document.getElementById("tooltip").innerHTML="Questo pulsante permette di azzerare le impostazioni attuali e generare una nuova mappa.";
+}
+
+function restoreTooltip() {
+    document.getElementById("tooltip").innerHTML = frase;
+}
+
+function restoreTooltipAdd() {
+    if(!adding)
+        document.getElementById("tooltip").innerHTML = frase;
+}
+
+function restoreTooltipEdit() {
+    if(!editing)
+        document.getElementById("tooltip").innerHTML = frase;
 }
