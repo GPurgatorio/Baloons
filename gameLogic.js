@@ -8,7 +8,6 @@ var menu = false;
 var world = [];
 
 //gameLogic settings
-var selected = false;
 var adding = false;
 var editing = false;
 var removing = false;
@@ -52,8 +51,8 @@ document.addEventListener("click", mouseClickHandler, false);
 
 //actual flow of the program
 setupVariables();
-setInterval(gameLoop,1000/60);          
-//gameLoop();
+//setInterval(gameLoop,1000/60);          
+gameLoop();
 
 //sets up used variables
 function setupVariables(){
@@ -78,9 +77,14 @@ function gameLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);       //clear previous screen
     worldMap.drawWorld(world);                              //draw terrain + sky
     
-    if(!gameStarted && PALLONI.length != 0) {
-        Baloon.drawBaloons(PALLONI);                        //draw every Baloon in its position
-        Baloon.updateBaloons(PALLONI);                      //update the state of every Baloon (e.g. gravity)
+    if(!gameStarted) {
+        if(editing || adding) {
+            drawCursorIndicator();
+        }
+        if(PALLONI.length != 0) {
+            Baloon.drawBaloons(PALLONI);                        //draw every Baloon in its position
+            Baloon.updateBaloons(PALLONI);                      //update the state of every Baloon (e.g. gravity)
+        }
     }
 
     if(gameStarted) {
@@ -104,7 +108,7 @@ function gameLoop(){
         }
 
         if(PALLONI.length!=0) {
-            if(PALLONI[turn] == null || PALLONI[turn].hp == 0)
+            if(PALLONI[turn] == null || PALLONI[turn].hp <= 0)
                 deadBaloon = true;
 
             Baloon.drawBaloons(PALLONI);
@@ -139,12 +143,12 @@ function gameLoop(){
                 
                 else if(projectiles[0].weapon == 1) {
                     if(projectiles[0].dx < 0) {
-                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 1]) {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) - 3]) {
                             projectileRIP = true;
                         }
                     }
                     else {
-                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) + 1]) {
+                        if(world[Math.floor(projectiles[0].x)] > world[Math.floor(projectiles[0].x) + 3]) {
                             projectileRIP = true;
                         }
                     }
@@ -167,13 +171,13 @@ function gameLoop(){
             }
         }
     }
-    //requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
 }
 
 function keyDownHandler(e) {
    
     if(gameStarted && !stopMoving) {                  
-        if(e.keyCode == 37) {
+        if(e.keyCode == 37) {                                      //classic keys movement
             Baloon.moveLeft(PALLONI,turn);
             aiming = false;
         }
@@ -219,6 +223,7 @@ function keyDownHandler(e) {
     }
 
     if(e.keyCode == 191) {                                          //debug purpose, "ù" 
+        //insert debug
         ;
     }
 }
@@ -227,6 +232,8 @@ function keyUpHandler(e) {
     if(gameStarted && PALLONI.length != 0 && !alreadyShot) {
         if(e.keyCode == 32) {
             w = new Weapon(PALLONI[turn].x, PALLONI[turn].y, PALLONI[turn].aimX, PALLONI[turn].aimY, sbadabum, PALLONI[turn].weapon)
+            if(PALLONI[turn].weapon == 1)   //sfera
+                w.x += PALLONI[turn].aimX/10;
             projectiles.push(w);
         }
     }
@@ -242,8 +249,14 @@ function addBaloon(e) {
         relativeX = e.clientX - canvas.offsetLeft;
         relativeY = e.clientY - canvas.offsetTop;
         if(adding && relativeY < world[relativeX]) {
+            document.getElementById("tooltip").innerHTML="Aggiungi quanti Baloons desideri!";
             PALLONI.push(new Baloon(relativeX, relativeY, cnt));       
             cnt++;
+        }
+        else {
+            if(adding) {
+                document.getElementById("tooltip").innerHTML="Impossibile far nascere Baloons nel terreno! Clicka nel cielo.";
+            }
         }
     }
 }
@@ -252,25 +265,19 @@ function mouseMoveHandler(e) {
     relativeX = e.clientX - canvas.offsetLeft;
     relativeY = e.clientY - canvas.offsetTop;
     if(editing) {
-        drawCursorIndicator();
         if(relativeX < canvas.width && dragging && (relativeY < world[relativeX] + 20 && (relativeY > world[relativeX]))) {
             if(removing)
                 worldMap.removeWorldPart(world, relativeX, relativeY);
         }
-    }
-    if(adding) {
-        ctx.beginPath();
-        ctx.arc(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, 10, 0, Math.PI*2);
-        ctx.fillStyle = "#696969";
-        ctx.fill();
-        ctx.closePath();
     }
 }
 
 function drawCursorIndicator(){
     ctx.beginPath();
     ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
-    if(!dragging)
+    if(adding)
+        ctx.fillStyle = "#A9A9A9";
+    else if(!dragging)
         ctx.fillStyle = "#008B8B";
     else
         ctx.fillStyle = "#FF0000";

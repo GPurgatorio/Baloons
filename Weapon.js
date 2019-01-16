@@ -6,7 +6,7 @@ class Weapon {
     constructor(x, y, dx, dy, sbadabum, weapon) { //, team, turn){
         this.x = x;
         this.y = y;
-        this.dx = dx;
+        this.dx = dx * sbadabum/10;
         this.dy = dy * sbadabum/10;
         this.weapon = weapon;
     }
@@ -26,8 +26,8 @@ class Weapon {
     static shootRect(array) {           //power 
         var obj = array[0];             //per ora non più di un proiettile per volta
         ctx.fillStyle = "#000000";
-        obj.x += obj.dx/4;
-        obj.y += obj.dy/4;
+        obj.x += obj.dx/3;
+        obj.y += obj.dy/3;
         obj.dy += 0.5;
         ctx.beginPath();
         ctx.fillRect(obj.x, obj.y, 10, 10);
@@ -37,7 +37,10 @@ class Weapon {
     static shootBall(array, world) {
         var obj = array[0];
         ctx.fillStyle = "#000000";
-        obj.x += obj.dx/20;
+        if(obj.dx > 0)
+            obj.x += 1;
+        else
+            obj.x -= 1;
         obj.y = world[Math.floor(obj.x)] - 10;
         ctx.beginPath();
         ctx.arc(obj.x, obj.y, 15, 0, 2 * Math.PI);

@@ -51,7 +51,7 @@ class Baloon {
             if(t < z) {
                 obj.x += 4;
             }
-            else                                    //no collisioni
+            else if(world[obj.x] + 20 > world[obj.x+1] || world[obj.x] < world[obj.x+1])  //check                                 //no collisioni
                 obj.x += 2; 
             
             if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius){
@@ -69,7 +69,7 @@ class Baloon {
             if(t < z) {
                 obj.x -= 4;
             }
-            else 
+            else if(world[obj.x] + 20 > world[obj.x-1] || world[obj.x] < world[obj.x-1])
                 obj.x -= 2;
             if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius) {
                 //if I'm not in the air due to jumping..
