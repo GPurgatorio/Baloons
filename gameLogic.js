@@ -54,7 +54,7 @@ document.addEventListener("click", mouseClickHandler, false);
 
 //actual flow of the program
 setupVariables();
-//setInterval(gameLoop,1000/60);  
+//setInterval(gameLoop,1000/60);          
 gameLoop();
 
 //sets up used variables
