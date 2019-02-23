@@ -1,4 +1,4 @@
-# Baloons-Final-Interface-Programming
+# Baloons
 
 There are 2 folders in this repository: they contain the Baloon project, which I'll explain soon, and the Midterm, which is a little project in F# to do in 3 days.
 The specs about the Midterm are in the Word document in the same folder, the LWC is a library we "home-made" during the course.
@@ -17,7 +17,7 @@ There is an Info button at the start and there you'll find a little bit of tutor
 ESC to get to the menu, Arrow-Keys let you move, Q and E makes you aim, Spacebar (press it more -> shoot more distant) lets you shoot the selected weapon and +/- lets you change the weapon you're currently using.
 
 Yeah, there are probably bugs, feel free to tell me which one you can find :)
-And no, the Analog Clock "not showing" (aka Flickering) is not a bug, I was trying to simulate the ficker problem resolved with many techniques like DoubleBuffering, just press ESC, Settings (Impostazioni) and enable Double Buffer. As I said, it's a course's Easter Egg :)
+And no, the Analog Clock "not showing" (aka Flickering) is not a bug, I was trying to simulate the flicker problem resolved with many techniques like DoubleBuffering, just press ESC, Settings (Impostazioni) and enable Double Buffer. As I said, it's a course's Easter Egg :)
 
 
 About the project:
@@ -30,3 +30,5 @@ The positions of the canvas, announcers, etc. are made for the screen of my comp
 I hope that's all and even if it's not, have fun playing if you wish or whatever pleases you!
 
 Try it live here -> https://gpurgatorio.github.io/Baloons-Final-Interface-Programming
+
+Voto Finale: 30L
