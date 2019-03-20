@@ -108,9 +108,11 @@ function gameLoop(){
             updateGameState();
         }
 
-        if(deadBaloon && turn == cnt) {                    
-            antiBugBoolean = true;
-            turn = 0;
+        if(deadBaloon) {                                    //I really can't remember why this is like this but :^)
+            if(turn == cnt)
+                turn = 0;          
+            else
+                antiBugBoolean = true;
         }
 
         if(PALLONI.length!=0) {
@@ -232,7 +234,7 @@ function keyDownHandler(e) {
         if(e.keyCode == 189)                                        //the "-" key, change weapon (<-)
             Baloon.weaponSwitchBackward(PALLONI, turn);
 
-        if(e.keyCode == 27) {                                        //the "esc" key, menù
+        if(e.keyCode == 27) {                                       //the "esc" key, menù
             menu = true;
             if(menu)
                 slidePause();
