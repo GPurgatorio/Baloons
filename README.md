@@ -30,6 +30,6 @@ The positions of the canvas, announcers, etc. are made for the screen of my comp
 
 I hope that's all and even if it's not, have fun playing if you wish or whatever pleases you!
 
-Try it live here -> https://gpurgatorio.github.io/Baloons-Final-Interface-Programming
+Try it live here -> https://gpurgatorio.github.io/Baloons/
 
 Voto Finale: 30L
