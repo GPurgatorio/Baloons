@@ -2,15 +2,17 @@
 //GPurgatorio - Final PI
 
 class worldMap {
-    // creating the landscape
+    
+    // Populates the array of heights to create a new terrain
     static createWorld(world){
 
         for (var n = 0; n < canvas.width+2; n++) {
-            // change height and slope
+            
+            // Update height & slope ...
             worldMap.height += worldMap.slope;
             worldMap.slope += (Math.random() * worldMap.STEP_CHANGE) * 2 - worldMap.STEP_CHANGE;
 
-            // clip height and slope to maximum
+            // ... To a Maximum
             if (worldMap.slope > worldMap.STEP_MAX) { 
                 worldMap.slope = worldMap.STEP_MAX 
             };
@@ -26,16 +28,18 @@ class worldMap {
                 worldMap.height = worldMap.BASE * 6/7;
                 worldMap.slope *= -1;
             }
+            // Save it
             world[n] = worldMap.height;
         }
     }
 
+    // Draws the terrain
     static drawWorld(world){
         var h;
         for (var n = 0; n < world.length -1; n++) {
             h = world[n];
             //https://www.w3schools.com/colors/colors_names.asp
-            //terrain
+            // Terrain
             ctx.beginPath();
             ctx.moveTo(n, worldMap.BASE);
             if(editing) {
@@ -49,7 +53,7 @@ class worldMap {
                 ctx.stroke();
             }
             
-            //sky
+            // Sky
             ctx.beginPath();
             ctx.moveTo(n, h+1);
             ctx.strokeStyle="#87CEEB";
@@ -58,6 +62,7 @@ class worldMap {
         }
     }
 
+    // Removes the terrain (circle-thingy)
     static removeWorldPart(world, coordX, coordY) {
         var x, d, a; 
         if(coordX < 10)
@@ -72,6 +77,7 @@ class worldMap {
         }
     }
 
+    // I don't even think I used this, should be bugged af imo
     static addWorldPart(world, coordX, coordY) {
         var x, d, a; 
         if(coordX < 10)
@@ -86,6 +92,7 @@ class worldMap {
         }
     }
 
+
     static isOccupied(array, coordX, pos) {
         var x;
         if(coordX < 10)
@@ -96,8 +103,8 @@ class worldMap {
             if(n == pos)
                 continue;
             var t = array[n].x - 21;
-            var z = array[n].x + 21;            //necessari perché altrimenti NaN, non posso mettere espressioni nei compare
-            if(x > t && x < z) {
+            var z = array[n].x + 21;            // NEVER put + in compares or it's considered a string
+            if(x > t && x < z) {                // So use variables and compare them
                 return true;
             }
         }
@@ -127,6 +134,7 @@ class worldMap {
         }
     }
 
+    // Simple brute-forced (my)eye-pleasing terrain smoothing algorythm eheh
     static fixWorld(world){
         var n, i;
         

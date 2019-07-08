@@ -44,13 +44,12 @@ var set = false;
 var winnable = false;
 var ended = false;
 var gameStarted = false;
-var antiBugBoolean = false;
 var aiming = false;
 var shooting = false;
 var alreadyShot = false;
 var projectileRIP = false;
 var stopMoving = false;
-var deadBaloon = false;
+var deadPlayer = false;
 var doubleBufferCnt = 0;
 var doubleBuffer = false;
 var indestructibleTerrain = false;
@@ -121,9 +120,17 @@ function setupVariables(){
 function setupGame() {
     drawWorld();
     drawBaloons();
-    if(!gameStarted) 
+    if(!gameStarted) {
+        
+        if(editing || adding) {
+            // Shows the cursor depending on the actual setting
+            drawCursorIndicator();
+        }
         requestAnimationFrame(setupGame);
+    }
     else { 
+        
+        cnt = PALLONI.length;
         if(cnt > 1)                                         // If there's at least 2 Baloons, it's a Deathmatch
             winnable = true;                                // therefore it's a legal game
         
@@ -132,100 +139,103 @@ function setupGame() {
 }
 
 
-/*     What actually happens in the game     */
+/* This just shows a circle around your pointer */
+function drawCursorIndicator(){
+    ctx.beginPath();
+    ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
+    if(adding)
+        ctx.fillStyle = "#A9A9A9";
+    else if(!dragging)
+        ctx.fillStyle = "#008B8B";
+    else
+        ctx.fillStyle = "#FF0000";
+    ctx.fill();
+    ctx.closePath();
+}
+
+
+
+/*     What actually happens in the game once started    */
 function gameLoop(){
     
-    if(!ended && winnable && cnt == 1) {                // If it was a legal game and only one Baloon left
+    // Checks if the game has ended
+    if(!ended && winnable && cnt <= 1) {                // If it was a legal game and only one Baloon left
         alert("The end!");                              // the game has ended with a winner!
         ended = true;
     }
 
-    if(!set && !ended) {                                // "When I wrote this, only 
-        set = true;                                     //      God and I understood what I was doing.
-        updateGameState();                              //          ... Now, God only knows."
+    // Sets up the timer for this turn
+    if(!set && !ended) {                              
+        set = true;                                     
+        updateGameState();                              
     }
 
-    if(deadBaloon) {                                    // I really can't remember why this is like this but :^)
-        if(turn == cnt)                                 // This one simply checks if the last Baloon died (a.k.a. "turn" % cnt)
-            turn = 0;          
-        else
-            antiBugBoolean = true;                      // I remember it caused a bug in the turns, but ugh dunno
-    }
+    drawWorld();
+    drawBaloons();
+    aimWeapon();
+    moveBaloon();                                           
 
-    // If there are Baloons alive..
-    if(PALLONI.length!=0) {        
+    /* Please just laugh with me with these variables names */
+    if(sbadabum > 0)
+        Weapon.drawIntensity(sbadabum, PALLONI, turn); 
+
+    /* I have an array of projectiles because maybe I wanted to shoot with weapons that had more projectiles at once... */
+    if(projectiles.length != 0) {                           
+
+        /* .. But guess what, this array will only be used at index 0 because I only have weapons with one projectile :^) */
+        shootThe0Index();
         
-        // If this/last Baloon's dead, let's remember that
-        if(PALLONI[turn] == null || PALLONI[turn].hp <= 0)
-            deadBaloon = true;
-
-        drawWorld();
-        drawBaloons();
-        aimWeapon();
-
-        // If the Baloon that's playing is not dead, then.. let him play
-        if(!deadBaloon) {
-            
-            Baloon.movementTurn(PALLONI, turn);
-            moveBaloon();                                           
-        }
-
-        // Please just laugh with me with these variables names
-        if(sbadabum > 0)
-            Weapon.drawIntensity(sbadabum, PALLONI, turn); 
-
-        // I have an array of projectiles because maybe I wanted to shoot with weapons that had more projectiles at once
-        if(projectiles.length != 0) {                           
-
-            // But guess what, this array will only be used at index 0 because I only have weapons with one projectile :^)
-            shootThe0Index();
-            
-            // Has science gone too far? And what about method's naming?
-            hasTheProjectileGoneTooFar();
-        }
+        /* Has science gone too far? And what about method's naming? */
+        hasTheProjectileGoneTooFar();
     }
 
-    // Repeat this quality code over and over baby
+    /*       Repeat this quality code over and over baby        */
     requestAnimationFrame(gameLoop);
 }
 
 
 // Draws the background
 function drawWorld() {
-    cnt = PALLONI.length;
 
-    // Clears previous screen
+    // Clears previous screen (do not forget to do that unless you'd like to cosplay the good old Windows times)
     ctx.clearRect(0, 0, canvas.width, canvas.height);          
     
     // Draws terrain and sky
     worldMap.drawWorld(world);
-    
-    if(!gameStarted) {
-        
-        if(editing || adding) {
-            // Shows the cursor depending on the actual setting
-            drawCursorIndicator();
-        }
-    }
 }
-
 
 
 // Draws the Baloons (and calls gravity et similia on them because YES)
 function drawBaloons() {
-    if(PALLONI.length != 0) {
-        // Draws every Baloon in its position
-        Baloon.drawBaloons(PALLONI);         
-        
-        // Updates the state of each Baloon (e.g. gravity)
-        Baloon.updateBaloons(PALLONI);                      
-    }
+    
+    // Draws every Baloon in its position
+    Baloon.drawBaloons(PALLONI);         
+    
+    // Updates the state of each Baloon (e.g. gravity)
+    Baloon.updateBaloons(PALLONI);                      
+}
+
+
+// Iiiiiiiit shows where you're aiming
+function aimWeapon() {
+    if(aimRight)
+        Baloon.aimWeaponRight(PALLONI, turn);
+    else if (aimLeft)
+        Baloon.aimWeaponLeft(PALLONI, turn);
+
+    Baloon.announceWeapon(PALLONI, turn);
+
+    if(aiming)
+        Baloon.drawAim(PALLONI, turn);
 }
 
 
 // Juuuuust move the Baloon
 function moveBaloon () {
-    if(gameStarted && !stopMoving) {                  
+    if(gameStarted && !stopMoving && !deadPlayer) {     
+        
+        Baloon.movementTurn(PALLONI, turn);     
+
         if(moveLeft) {
             Baloon.moveLeft(PALLONI,turn);
             aiming = false;
@@ -246,37 +256,6 @@ function moveBaloon () {
 }
 
 
-// Iiiiiiiit shows where you're aiming
-function aimWeapon() {
-    if(aimRight)
-        Baloon.aimWeaponRight(PALLONI, turn);
-
-    else if (aimLeft)
-        Baloon.aimWeaponLeft(PALLONI, turn);
-
-    Baloon.announceWeapon(PALLONI, turn);
-
-    if(aiming)
-        Baloon.drawAim(PALLONI, turn);
-}
-
-
-// Kaboom
-function shoot() {
-    if(gameStarted && !alreadyShot) {
-        var t = PALLONI[turn];
-        w = new Weapon(t.x, t.y, t.aimX, t.aimY, sbadabum, t.weapon)
-        
-        if(t.weapon == 1)   
-            w.x += t.aimX/10;
-        
-        projectiles.push(w);
-        alreadyShot = true;                                     // Can't shoot twice / turn
-        stopMoving = false;
-        sbadabum = 0;
-    }
-}
-
 // This one shoots the projectile at index 0 (big motivation wrote in gameLoop ())
 function shootThe0Index() {
     if(projectiles[0].weapon == 0)
@@ -294,7 +273,7 @@ function shootThe0Index() {
         else if(doubleBufferCnt >= 60)
             doubleBufferCnt = 0;
         
-        doubleBufferCnt = (doubleBufferCnt + 1);
+        doubleBufferCnt = doubleBufferCnt + 1;
     }
 }
 
@@ -349,6 +328,10 @@ function hasTheProjectileGoneTooFar() {
 
 
 
+/* And now extra stuff to make this all work */
+
+
+
 // Triple-nested if for really practical and intuitive debugging
 function mouseMoveHandler(e) {
     relativeX = e.clientX - canvas.offsetLeft;
@@ -359,6 +342,12 @@ function mouseMoveHandler(e) {
                 worldMap.removeWorldPart(world, relativeX, relativeY);
         }
     }
+}
+
+// Uh clicking is only here because I really wanted to put it somewhere, but not that useful as u can see
+function mouseClickHandler(e){
+    if(editing)
+        dragging = !dragging;
 }
 
 
@@ -431,7 +420,7 @@ function keyUpHandler(e) {
             moveUp = false;
         
         if(e.keyCode == 32 && aiming) 
-            shoot();
+            addProjectile();
 
         if(e.keyCode == 69 || e.keyCode == 81) {
             if (e.keyCode == 69)                                    // The "e" key, aim (->)
@@ -441,21 +430,32 @@ function keyUpHandler(e) {
         }
 }
 
-function mouseClickHandler(e){
-    if(editing)
-        dragging = !dragging;
+
+// Kaboom
+function addProjectile() {
+    if(gameStarted && !alreadyShot) {
+        var t = PALLONI[turn];
+        w = new Weapon(t.x, t.y, t.aimX, t.aimY, sbadabum, t.weapon)
+        
+        if(t.weapon == 1)   
+            w.x += t.aimX/10;
+        
+        projectiles.push(w);
+        alreadyShot = true;                                     // Can't shoot twice / turn
+        stopMoving = false;                                     // Move again to retreat
+        sbadabum = 0;
+    }
 }
 
 
-// This one adds a Baloon in the point you're clicking (if you're adding Baloons)
+/* This one adds a Baloon in the point you're clicking (if you're adding Baloons) */
 function addBaloon(e) {
     if(!editing && !gameStarted) {
         relativeX = e.clientX - canvas.offsetLeft;
         relativeY = e.clientY - canvas.offsetTop;
         if(adding && relativeY < world[relativeX]) {
             document.getElementById("tooltip").innerHTML="Aggiungi quanti Baloons desideri!";
-            PALLONI.push(new Baloon(relativeX, relativeY, cnt));       
-            cnt++;
+            PALLONI.push(new Baloon(relativeX, relativeY));       
         }
         else {
             if(adding) {
@@ -466,23 +466,8 @@ function addBaloon(e) {
 }
 
 
-// This just shows a circle around your pointer
-function drawCursorIndicator(){
-    ctx.beginPath();
-    ctx.arc(relativeX, relativeY, 10, 0, Math.PI*2);
-    if(adding)
-        ctx.fillStyle = "#A9A9A9";
-    else if(!dragging)
-        ctx.fillStyle = "#008B8B";
-    else
-        ctx.fillStyle = "#FF0000";
-    ctx.fill();
-    ctx.closePath();
-}
-
-
-// This one is an oversemplification of what a well-defined terrain is like
-//      ... yeah I might have brute forced it 'till it pleased my eye
+/* This one is an oversemplification of what a well-defined terrain is like
+          ... yeah I might have brute forced it 'till it pleased my eye */
 function checkMap(world) {
 
     for(var i=0; i<world.length -1; i++) {
@@ -494,27 +479,44 @@ function checkMap(world) {
     return false;
 }
 
-// This smooths the terrain a bit
+/*  This smooths the terrain a bit  */
 function fixWorld() {
     worldMap.fixWorld(world);
     document.getElementById("tooltip").innerHTML="Rende il terreno meno seghettato.";
 }
 
 
-// Timer related events
+/* Function that gets called when a Baloon dies (hp <= 0) */
+function someoneIsDead(position) {
+    
+    cnt = cnt - 1;
+    // If the dead Baloon is "before" in the array (that gets spliced), then turn should be decremented
+    if(turn > position) {
+        turn = turn - 1;
+    }
+
+    // Else if you killed yourself (in game!) then everything stays as it is, unless you're at the "last" one
+    else if (turn == position) {
+        deadPlayer = true;
+        if(turn >= cnt)
+            turn = 0;
+    }
+}
+
+
+/* Timer related events */
 function updateGameState(){
 
     document.getElementById("announcer").innerHTML="Tocca a Baloon#" + turn + "!";
     
     // Well it's a new turn so lets put everything at its place
-    deadBaloon = false;
+    deadPlayer = false;
     stopMoving = false;
     forceExplosion = false;
     alreadyShot = false;
     projectileRIP = false;
     shooting = false;
     exploding = 0;
-    antiBugBoolean = false;
     
     // And lets use some more variables to do other stuff
     var alreadyDidThis = false;
@@ -534,37 +536,39 @@ function updateGameState(){
             else
                 seconds = 0;
 
-            // If you shot, then you have (max) 4 seconds left to run
+            // If you shot, then you have (max) 3 seconds left to run
             if(shooting == true) {
-                if(seconds > 4 && !alreadyDidThis) {
-                    countDown = 4000;
+                if(seconds > 3 && !alreadyDidThis) {
+                    countDown = 3000;
                     now = 0;
-                    seconds = 4;
+                    seconds = 3;
                     alreadyDidThis = true;
                 }
             }
 
             //Shows seconds left for the turn
-            document.getElementById("timer").innerHTML = seconds + "s ";
+            document.getElementById("timer").innerHTML = seconds + "s";
 
             // If there's no time left, you won't be able to move anymore this turn
             if(distance <= 0) 
                 stopMoving = true;
 
-            // Ok I think this is "if your turn is over" (no projectiles on screen && no time left, or your dead, or that.. Idk)
-            if (projectiles[0] == null && (distance <= 0 || deadBaloon || antiBugBoolean)) {
+            // This is "if your turn is over" (no projectiles on screen && no time left, or your dead)
+            if (projectiles[0] == null && (distance <= 0 || deadPlayer)) {
                 
                 clearInterval(a);
                 
-                PALLONI[turn].goingUp = false;
+                forceAllDown();
                 set = false;
                 shooting = false;
                 sbadabum = 0;            
 
-                // If there are no dead Baloons, increase counter to go let the next one play
-                if(!deadBaloon)
-                    turn = (turn + 1) % cnt;        // (this because killing a Baloon calls the splice() method)
-                
+
+                // If there are no dead Baloons, increase "turn" to let the next one play normally
+                if(!deadPlayer)
+                    turn = (turn + 1) % cnt;
+
+
                 // Good quality code here 
                 if(ended)
                     document.getElementById("timer").innerHTML = "Thanks for playing!";
@@ -573,7 +577,7 @@ function updateGameState(){
 
             }
 
-            // And this is because the "special weapon" (Analog Clock) has it's own behavious (Holy Grenade)
+            // And this is because the "special weapon" (Analog Clock) has it's own behaviour (Holy Grenade)
             if(projectiles[0] != null) {
 
                 // Dx and Dy are for how much the projectile has to move in the X (or Y) axis
@@ -588,4 +592,10 @@ function updateGameState(){
             }
         }
     }, 1000);
+}
+
+
+function forceAllDown() {
+    for(var n = 0; n < PALLONI.length; n++)
+       PALLONI[n].goingUp = false;
 }

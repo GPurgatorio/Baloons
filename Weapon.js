@@ -11,6 +11,7 @@ class Weapon {
         this.weapon = weapon;
     }
 
+    // The little line, the longer the stronger
     static drawIntensity(intensity, array, pos) {
         var obj = array[pos];
         var x = obj.ballRadius * Math.cos(obj.angleAim) * 3;
@@ -23,6 +24,7 @@ class Weapon {
         ctx.closePath();
     }
 
+    // Shoots Bazooka (rectangle)
     static shootRect(array) {           
         var obj = array[0];
         ctx.fillStyle = "#000000";
@@ -34,6 +36,7 @@ class Weapon {
         ctx.closePath();
     }   
 
+    // Shoots Sfera (which is a filled arc)
     static shootBall(array, world) {
         var obj = array[0];
         ctx.fillStyle = "#000000";
@@ -49,7 +52,7 @@ class Weapon {
         ctx.closePath();
     }
 
-    // Some kind of Easter Egg from the course :)
+    // Shoots an Analog Clock (Easter Egg from our course!)
     static shootAnalogClock(array) {
         var obj = array[0];
         

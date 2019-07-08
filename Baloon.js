@@ -3,7 +3,7 @@
 
 class Baloon {
 
-    constructor(coordX, coordY, count) { //, team, turn){
+    constructor(coordX, coordY) { //, team, turn){
         
         this.x = coordX;
         this.y = coordY;
@@ -12,7 +12,6 @@ class Baloon {
         this.dy = -2;
         this.jumping = false;
         this.goingUp = false;
-        this.myTurn = count;
         this.hp = 100;
         this.aimX = 5;
         this.aimY = 5;
@@ -23,6 +22,7 @@ class Baloon {
         this.color = Baloon.getRandomColor();
     }
 
+    // Gets a random color for the baloon
     static getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -32,6 +32,7 @@ class Baloon {
         return color;
     }
 
+    // Draws every Baloon
     static drawBaloons(array) {
         if(array.length!=0) {
             for(var n = 0; n < array.length; n++){
@@ -47,6 +48,7 @@ class Baloon {
         }
     }
 
+    // Movements (right, left, jump, down)
     static moveRight(array, p) {
         let obj = array[p];
         if(obj.x < canvas.width - obj.ballRadius && obj.y <= world[obj.x+1] + 3){ 
@@ -101,40 +103,41 @@ class Baloon {
         }
     }
 
+    // Something like "environment movement", like you can't jump in air, if you're jumping you go up by a bit, etc..
     static movementTurn(array, p){
         let obj = array[p];
-        if(obj != null) {
-            let relX = obj.x;
+        let relX = obj.x;
+        let relY = obj.y;
 
-            let relY = obj.y;
-
-            if(relY >= world[relX] - obj.ballRadius && relY < world[relX]){
-                obj.jumping = false;
-            }
-            if(obj.dy >= 0){
-                obj.goingUp = false;
-            }
-            if(obj.goingUp && obj.dy != 0){
-                obj.y += obj.dy;
-                obj.dy += 1;
-            }
-            if(obj.y < 10)
-                obj.y = 10;
-            if(obj.y > canvas.height)
-                obj.hp = 0;
+        if(relY >= world[relX] - obj.ballRadius && relY < world[relX]){
+            obj.jumping = false;
         }
+        if(obj.dy >= 0){
+            obj.goingUp = false;
+        }
+        if(obj.goingUp && obj.dy != 0){
+            obj.y += obj.dy;
+            obj.dy += 1;
+        }
+        if(obj.y < 10)
+            obj.y = 10;
+        if(obj.y > canvas.height)
+            obj.hp = 0;
+
     }
 
+    // Checks if there are dead Baloons and applies gravity to every Baloon that's alive
     static updateBaloons(array) {
         for(var i = 0; i < array.length; i++) {
             var obj = array[i];
             
             if(obj.hp <= 0) {
+                someoneIsDead(i);               // gameLogic.js
                 array.splice(i,1);
                 i--;
                 continue;
             }
-            //gravity
+            // Gravity
             else if(Math.abs(obj.y) < world[obj.x] - obj.ballRadius && !obj.goingUp){
                 array[i].y += obj.dy;
                 if(obj.dy < 1) 
@@ -145,6 +148,7 @@ class Baloon {
         }
     }
 
+    // Bazooka -> Sfera -> Analog Clock -> Bazooka -> ...
     static weaponSwitchForward(array, turn){
         var obj = array[turn];
         obj.weapon = (obj.weapon + 1) % Baloon.WEAPON_NUMBER;
@@ -156,6 +160,7 @@ class Baloon {
             document.getElementById("announcer").innerHTML="Arma attuale: Analog Clock";
     }
 
+    // The opposite order, Bazooka -> Analog Clock -> Sfera -> Bazooka -> ...
     static weaponSwitchBackward(array, turn){
         var obj = array[turn];
         if(obj.weapon != 0)
@@ -170,16 +175,19 @@ class Baloon {
             document.getElementById("announcer").innerHTML="Arma attuale: Analog Clock";
     }
 
+    // Aim to the right
     static aimWeaponRight(array, turn){
         let obj = array[turn];
         obj.angleAim += Math.PI * 3 / 180;
     }
     
+    // Aim to the left
     static aimWeaponLeft(array, turn){
         let obj = array[turn];
         obj.angleAim -= Math.PI * 3 / 180;
     }
 
+    // Draws the correct quadrant you're aiming and draws where you're aiming
     static drawAim(array, turn){
         let obj = array[turn];
         var eAngle = 0;
@@ -226,6 +234,7 @@ class Baloon {
         ctx.fillRect(obj.x + obj.aimX -2, obj.y + obj.aimY -2, 4, 4);
     }
 
+    // Simple damage calculation
     static hitBaloons(array, coordX, weaponType){
         var dmg, radius;
         if(weaponType == 0) { 
@@ -246,7 +255,7 @@ class Baloon {
             var obj = array[n];
             var t = Math.floor(coordX) - radius;
             var z = Math.floor(coordX) + radius;
-            //console.log("Se obj.x " + obj.x + " > t: " + t + " OR obj.x < " + z);
+
             if(Math.floor(obj.x) > t && Math.floor(obj.x) < z) {
                 dmg -= Math.abs(coordX - obj.x);
                 obj.hp -= Math.abs(Math.floor(dmg));
@@ -255,6 +264,7 @@ class Baloon {
 
     }
 
+    // Announcer text
     static announceWeapon(array, turn) {
         var obj = array[turn];
         if(obj.weapon == 0)
