@@ -4,6 +4,7 @@
 class Baloon {
 
     constructor(coordX, coordY, count) { //, team, turn){
+        
         this.x = coordX;
         this.y = coordY;
         this.ballRadius = 10;
@@ -17,7 +18,9 @@ class Baloon {
         this.aimY = 5;
         this.angleAim = Math.PI * 1.75;
         this.weapon = 0;
-        this.color = Baloon.getRandomColor();           //some colors are not appreciated with the background eheh
+
+        // Some colors aren't good for the background, but I didn't care about it
+        this.color = Baloon.getRandomColor();
     }
 
     static getRandomColor() {
@@ -33,6 +36,7 @@ class Baloon {
         if(array.length!=0) {
             for(var n = 0; n < array.length; n++){
                 var obj = array[n];
+                
                 ctx.beginPath();
                 ctx.arc(obj.x, obj.y, obj.ballRadius, 0, Math.PI*2);
                 ctx.fillStyle = obj.color;
@@ -49,10 +53,10 @@ class Baloon {
             var t = Math.floor(obj.y) + obj.ballRadius;
             var z = Math.floor(world[obj.x]);
             if(t < z) {
-                obj.x += 4;
+                obj.x += 2;
             }
             else if(world[obj.x] + 20 > world[obj.x+1] || world[obj.x] < world[obj.x+1])  //check                                 //no collisioni
-                obj.x += 2; 
+                obj.x += 1; 
             
             if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius){
                 if(obj.y > world[obj.x] - obj.ballRadius*2)
@@ -67,10 +71,10 @@ class Baloon {
             var t = Math.floor(obj.y) + obj.ballRadius;
             var z = Math.floor(world[obj.x]);
             if(t < z) {
-                obj.x -= 4;
+                obj.x -= 2;
             }
             else if(world[obj.x] + 20 > world[obj.x-1] || world[obj.x] < world[obj.x-1])
-                obj.x -= 2;
+                obj.x -= 1;
             if(obj.y > world[obj.x] + obj.ballRadius || obj.x < world[obj.x] + obj.ballRadius || obj.x > world[obj.x] + obj.ballRadius) {
                 //if I'm not in the air due to jumping..
                 if(obj.y > world[obj.x] - obj.ballRadius*2)
@@ -84,7 +88,7 @@ class Baloon {
         if(obj.y >= world[obj.x] - obj.ballRadius) {
             obj.jumping = true;
             obj.goingUp = true;
-            obj.dy = -13;
+            obj.dy = -11;
         }
     }
 
@@ -127,6 +131,8 @@ class Baloon {
             
             if(obj.hp <= 0) {
                 array.splice(i,1);
+                i--;
+                continue;
             }
             //gravity
             else if(Math.abs(obj.y) < world[obj.x] - obj.ballRadius && !obj.goingUp){
@@ -166,12 +172,12 @@ class Baloon {
 
     static aimWeaponRight(array, turn){
         let obj = array[turn];
-        obj.angleAim += Math.PI * 5 / 180;
+        obj.angleAim += Math.PI * 3 / 180;
     }
     
     static aimWeaponLeft(array, turn){
         let obj = array[turn];
-        obj.angleAim -= Math.PI * 5 / 180;
+        obj.angleAim -= Math.PI * 3 / 180;
     }
 
     static drawAim(array, turn){

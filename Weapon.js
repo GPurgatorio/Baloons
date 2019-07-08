@@ -1,5 +1,5 @@
 "use strict"
-//GPurgatorio - Final PI
+// GPurgatorio - Final PI
 
 class Weapon {
 
@@ -23,8 +23,8 @@ class Weapon {
         ctx.closePath();
     }
 
-    static shootRect(array) {           //power 
-        var obj = array[0];             //per ora non più di un proiettile per volta
+    static shootRect(array) {           
+        var obj = array[0];
         ctx.fillStyle = "#000000";
         obj.x += obj.dx/3;
         obj.y += obj.dy/3;
@@ -42,13 +42,14 @@ class Weapon {
         else
             obj.x -= 1;
         obj.y = world[Math.floor(obj.x)] - 10;
+        
         ctx.beginPath();
         ctx.arc(obj.x, obj.y, 15, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
     }
 
-    //Some kind of Easter Egg from the course :)
+    // Some kind of Easter Egg from the course :)
     static shootAnalogClock(array) {
         var obj = array[0];
         
@@ -76,13 +77,14 @@ class Weapon {
             obj.dx = 0;
         }
 
-        //draw analogClock
+        // Draw analogClock
         var radius = 25;
         var ang, a, b;
         var now = new Date();
         var hour = now.getHours();
         var minute = now.getMinutes();
         var second = now.getSeconds();
+        
         hour = hour%12;
         hour = (hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60));
         
@@ -94,7 +96,7 @@ class Weapon {
         minute += Math.PI/2;
         second += Math.PI/2;
 
-        //body
+        // Body
         ctx.beginPath();
         ctx.arc(obj.x, obj.y, radius, 0, 2 * Math.PI);
         if(obj.dx == 0 && obj.dy == 0)
@@ -104,14 +106,14 @@ class Weapon {
         ctx.fill();
         ctx.closePath();
 
-        //center
+        // Center
         ctx.beginPath();
         ctx.arc(obj.x, obj.y, radius * 0.1, 0, 2 * Math.PI);
         ctx.fillStyle = '#333';
         ctx.fill();
         ctx.closePath();
 
-        //tacchette
+        // Markers
         ctx.beginPath();
         for(var num = 0; num < 12; num++){
             ang = num * Math.PI / 6;
@@ -127,25 +129,23 @@ class Weapon {
         }
         ctx.closePath();
 
-        //lancette - h
         ctx.beginPath();
-        ctx.moveTo(obj.x, obj.y);
-        ctx.lineTo(obj.x + radius*Math.cos(hour)*0.5, obj.y + radius*Math.sin(hour)*0.5);
-        ctx.stroke();
-        ctx.closePath();
 
-        //lancette - m
-        ctx.beginPath();
-        ctx.moveTo(obj.x,obj.y);
-        ctx.lineTo(obj.x + radius*Math.cos(minute)*0.8, obj.y + radius*Math.sin(minute)*0.8);
-        ctx.stroke();
-        ctx.closePath();
+            // Hours
+            ctx.moveTo(obj.x, obj.y);
+            ctx.lineTo(obj.x + radius*Math.cos(hour)*0.5, obj.y + radius*Math.sin(hour)*0.5);
+            ctx.stroke();
+            
+            // Minutes
+            ctx.moveTo(obj.x,obj.y);
+            ctx.lineTo(obj.x + radius*Math.cos(minute)*0.8, obj.y + radius*Math.sin(minute)*0.8);
+            ctx.stroke();
 
-        //lancette - s
-        ctx.beginPath();
-        ctx.moveTo(obj.x,obj.y);
-        ctx.lineTo(obj.x + radius*Math.cos(second)*0.9, obj.y + radius*Math.sin(second)*0.9);
-        ctx.stroke();
+            // Seconds
+            ctx.moveTo(obj.x,obj.y);
+            ctx.lineTo(obj.x + radius*Math.cos(second)*0.9, obj.y + radius*Math.sin(second)*0.9);
+            ctx.stroke();
+
         ctx.closePath();
     }
 }
