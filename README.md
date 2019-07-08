@@ -22,14 +22,25 @@ And no, the Analog Clock "not showing" (aka Flickering) is not a bug, I was tryi
 
 About the project:
 
+<<<<<<< HEAD
 It was my first attempt at Javascript, don't look at the code hoping I wrote it thinking about code reusability or whatever is a good practice, the teacher wouldn't look at the code so as long as I can read it, works fine :^)
 There are no extern libraries used, just Vanilla Javascript. The rest is, of course, HTML and CSS.
 Since there are no extern libraries, the graphics is intentionally simple, but I've tried to show that it's possible to do whatever we want like:
 the first example that comes to my mind is "there is a PNG that it's loaded every explosion just to show that it's possible to change the Baloons to something else, like an actual Worm"
+=======
+It was my first attempt at Javascript, don't look at the code hoping I wrote it thinking about code reusability or whatever is a good practice, the teacher wouldn't look at the code so as long as I can read it, works fine :^)  
+There are no extern libraries used, just Vanilla Javascript. The rest is, of course, HTML and CSS.  
+Since there are no extern libraries, the graphics is intentionally simple, but I've tried to show that it's possible to do whatever we want like:  
+the first example that comes to my mind is "there is a PNG that it's loaded every explosion just to show that it's possible to change the Baloons to something else, like an actual Worm"  
+>>>>>>> 10be324107aaa9cee1a848e1f7d8d096c47ee418
 The positions of the canvas, announcers, etc. are made for the screen of my computer since it's there that I've showed the project to the teacher: don't worry, on my computer it looks fine!
 
 I hope that's all and even if it's not, have fun playing if you wish or whatever pleases you!
 
+<<<<<<< HEAD
 Try it live here -> https://gpurgatorio.github.io/Baloons-Final-Interface-Programming
+=======
+Try it live here -> https://gpurgatorio.github.io/Baloons/
+>>>>>>> 10be324107aaa9cee1a848e1f7d8d096c47ee418
 
 Voto Finale: 30L
