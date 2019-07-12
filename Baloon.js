@@ -7,12 +7,12 @@ class Baloon {
         
         this.x = coordX;
         this.y = coordY;
-        this.ballRadius = 10;
+        this.ballRadius = Baloon.BALOON_RADIUS;
         this.dx = 2;
         this.dy = -2;
         this.jumping = false;
         this.goingUp = false;
-        this.hp = 100;
+        this.hp = Baloon.MAX_HP;
         this.aimX = 5;
         this.aimY = 5;
         this.angleAim = Math.PI * 1.75;

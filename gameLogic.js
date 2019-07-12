@@ -7,19 +7,23 @@
  * 
  * This code is my first attempt at coding in Javascript and, when I was coding this, I wasn't really paying attention
  * for the code's quality or other good practices, I was just following the line of my twisted mind.
- *      If you're here to learn Javascript, please go somewhere else.
- *      If you're here to see how good my code is, please check other projects or simply ask me for my private ones.
- * No, the teacher wouldn't (and didn't) look at the code, he just wanted to check the results.
+ *      No, the teacher wouldn't (and didn't) look at the code, he just wanted to check the results.
+ * 
+ * No libraries were used in the creation of this game, so I kinda had to reimplement everything I needed.
  * 
  * I'll from time to time try to refactor this code, but you could be reading this in 2040 and I might still have this
  * Frankenstein-ish creation.
+ *      Yeah I miss many constants, I know, ok? :(
  * 
- * I miss many constants, like radius of the Baloons, (max) seconds to retreat after shooting, etc
- *      Every single number you'll see in this code is probably a missed constant.
  * 
- * If you're here to have a laugh tho, let's go! I always laugh every time I read this thing ahah
- * 
- * No libraries were used in the creation of this game, so I kinda had to reimplement everything I needed.
+ * Known bugs that I won't fix (at least for now): 
+ *  (1) If you suicide, array gets spliced on your spot and "moving" calls method on the next Baloon, making him move
+ *          but unable to do anything else (suicide -> you already shot, can't shoot twice/turn). 
+ *              Once the (max) 3 seconds end, everything's back as usual, so this "bug" is just someone gets to move
+ *              for (max) 3 seconds more than he should. Map is small enough that it doesn't matter
+ *          To Resolve That: call the method that checks HP only at the end of the turn (like real Worms)
+ *
+ *  (2) *** waiting for hints
  * 
  * GPurgatorio      -       https://github.com/GPurgatorio
  *  */ 
@@ -32,6 +36,7 @@ var ctx = canvas.getContext("2d");
 var menu = false;
 var world = [];
 var frase = "Seleziona uno dei pulsanti per maggiori info."
+var audio;
 
 
 /*  GameLogic settings  */
@@ -44,6 +49,7 @@ var set = false;
 var winnable = false;
 var ended = false;
 var gameStarted = false;
+var playMusic = false;
 var aiming = false;
 var shooting = false;
 var alreadyShot = false;
@@ -68,9 +74,10 @@ var aimLeft = false;
 var PALLONI = [];
 var projectiles = [];
 var cnt = 0;
-var team = 0;
+//var team = 0;             // This is for when I'll ever want to implement teams
 var turn = 0;
-var ballSensitivity = 3;
+var ballSensitivity;
+var maxSecRetreat;
 var w;
 var relativeX;
 var relativeY;
@@ -96,7 +103,7 @@ setupGame();
 /** Functions */
 
 
-/*   Sets up used variables   */
+/*   Sets up some of the used variables   */
 function setupVariables(){
 
     worldMap.canvas = document.getElementById("canvas");
@@ -107,7 +114,13 @@ function setupVariables(){
     worldMap.height = worldMap.BASE*3/4;
     worldMap.slope = (Math.random() * worldMap.STEP_MAX) * 2 - worldMap.STEP_MAX;
     worldMap.createWorld(world);
+    
+    Baloon.BALOON_RADIUS = 10;
     Baloon.WEAPON_NUMBER = 3;
+    Baloon.MAX_HP = 100;
+
+    ballSensitivity = 3;
+    maxSecRetreat = 3
 
     explosionImg.src = 'images/explosion.png';
     
@@ -133,7 +146,7 @@ function setupGame() {
         cnt = PALLONI.length;
         if(cnt > 1)                                         // If there's at least 2 Baloons, it's a Deathmatch
             winnable = true;                                // therefore it's a legal game
-        
+
         gameLoop();
     }
 }
@@ -282,7 +295,7 @@ function shootThe0Index() {
 function hasTheProjectileGoneTooFar() {
     // If projectile goes beyond the canvas in some direction (but not topside, so it can fall back down)
     if(projectiles[0].x < 0 || projectiles[0].x > canvas.width || projectiles[0].y > canvas.height)
-    projectiles.splice(0,1);
+        projectiles.splice(0,1);
 
     else if(projectiles[0].weapon == 1) {
         if(projectiles[0].dx < 0) {
@@ -328,7 +341,7 @@ function hasTheProjectileGoneTooFar() {
 
 
 
-/* And now extra stuff to make this all work */
+/* And now extra stuff to somehow make this all work */
 
 
 
@@ -558,8 +571,10 @@ function updateGameState(){
                 
                 clearInterval(a);
                 
-                forceAllDown();
+                // Sets the possibility for another turn (gameLoop()) 
                 set = false;
+
+                // Resets "one per turn" settings to default
                 shooting = false;
                 sbadabum = 0;            
 
@@ -590,6 +605,9 @@ function updateGameState(){
                 if(exploding >= 3)
                     forceExplosion = true;
             }
+            
+            // Forces that the gravity is called on each Baloon (otherwise if jumping and end turn they're flying eheh)
+            forceAllDown();
         }
     }, 1000);
 }

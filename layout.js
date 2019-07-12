@@ -130,6 +130,23 @@ function updateSliderValue() {
     ballSensitivity = parseInt(slider.value);
 }
 
+function musicToggle() {
+
+    if(audio == null) {
+        audio = new Audio('./seriousMusic/VerySeriousMashUp.mp3');
+        audio.loop = true;
+    }
+
+    playMusic = !playMusic;
+
+    if(playMusic)
+        audio.play();
+    else {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+}
+
 function end() {
     ended = true;
     gameStarted = false;

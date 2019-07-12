@@ -92,7 +92,9 @@ class worldMap {
         }
     }
 
-
+    // I don't remember using this anywhere but I'm too lazy to check, it once was to prevent  
+    //      collisions between Baloons (like standing on eachother), but collision
+    //          already was with the terrain so I just removed this
     static isOccupied(array, coordX, pos) {
         var x;
         if(coordX < 10)
@@ -111,6 +113,7 @@ class worldMap {
         return false;
     }
 
+    // Damages terrain
     static terrainHit(world, coordX, coordY, weaponType) {
 
         var x, d, a, explosionR;
